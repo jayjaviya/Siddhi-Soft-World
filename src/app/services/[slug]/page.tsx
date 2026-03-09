@@ -5,6 +5,7 @@ import ServiceOverview from "@/features/service-details/ServiceOverview";
 import ServiceCapabilities from "@/features/service-details/ServiceCapabilities";
 import ServiceProcess from "@/features/service-details/ServiceProcess";
 import ServiceBenefits from "@/features/service-details/ServiceBenefits";
+import ServiceSidebar from "@/features/service-details/ServiceSidebar";
 import { notFound } from "next/navigation";
 
 interface ServiceData {
@@ -104,16 +105,23 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         breadcrumb={data.title}
       />
       
-      <ServiceOverview 
-        overview={data.overview}
-        summary={data.summary}
-      />
+      {/* Sidebar + Content layout */}
+      <div className="container mx-auto px-6 flex flex-col lg:flex-row gap-12 pb-32">
+        <ServiceSidebar />
+        
+        <div className="flex-1 min-w-0">
+          <ServiceOverview 
+            overview={data.overview}
+            summary={data.summary}
+          />
 
-      <ServiceCapabilities capabilities={data.capabilities} />
-      
-      <ServiceProcess />
-      
-      <ServiceBenefits benefits={data.benefits} />
+          <ServiceCapabilities capabilities={data.capabilities} />
+          
+          <ServiceProcess />
+          
+          <ServiceBenefits benefits={data.benefits} />
+        </div>
+      </div>
     </div>
   );
 }

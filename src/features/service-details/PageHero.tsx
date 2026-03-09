@@ -81,6 +81,7 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
               <div className="flex flex-wrap justify-center overflow-hidden">
                 {(() => {
                   const words = title.toUpperCase().split(" ");
+                  
                   if (words.length <= 1) {
                     return (
                       <div className="flex">
@@ -92,7 +93,7 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
                               animate: { opacity: 1, y: 0 },
                             }}
                             transition={{ duration: 0.4, ease: "easeOut" }}
-                            className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
+                            className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary will-change-[opacity,transform] inline-block pb-2"
                           >
                             {char}
                           </motion.span>
@@ -101,13 +102,53 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
                     );
                   }
 
-                  const lastWord = words.pop();
-                  const firstPart = words.join(" ");
+                  if (words.length === 2) {
+                    return (
+                      <>
+                        <div className="flex mr-6 text-white">
+                          {words[0].split("").map((char, index) => (
+                            <motion.span
+                              key={`first-${index}`}
+                              variants={{
+                                initial: { opacity: 0, y: 30 },
+                                animate: { opacity: 1, y: 0 },
+                              }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                              className="will-change-[opacity,transform] inline-block"
+                            >
+                              {char}
+                            </motion.span>
+                          ))}
+                        </div>
+                        <div className="flex">
+                          {words[1].split("").map((char, index) => (
+                            <motion.span
+                              key={`last-${index}`}
+                              variants={{
+                                initial: { opacity: 0, y: 30 },
+                                animate: { opacity: 1, y: 0 },
+                              }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                              className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary will-change-[opacity,transform] inline-block pb-2"
+                            >
+                              {char}
+                            </motion.span>
+                          ))}
+                        </div>
+                      </>
+                    );
+                  }
+
+                  // 3+ words: first words white, second-to-last orange gradient, last word teal gradient
+                  const lastWord = words[words.length - 1];
+                  const secondLastWord = words[words.length - 2];
+                  const firstWords = words.slice(0, -2).join(" ");
                   
                   return (
                     <>
-                      <div className="flex mr-6 text-white">
-                        {firstPart.split("").map((char, index) => (
+                      {/* First word(s) - White, on its own line */}
+                      <div className="flex justify-center w-full text-white mb-2">
+                        {firstWords.split("").map((char, index) => (
                           <motion.span
                             key={`first-${index}`}
                             variants={{
@@ -121,20 +162,38 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
                           </motion.span>
                         ))}
                       </div>
-                      <div className="flex">
-                        {lastWord?.split("").map((char, index) => (
-                          <motion.span
-                            key={`last-${index}`}
-                            variants={{
-                              initial: { opacity: 0, y: 30 },
-                              animate: { opacity: 1, y: 0 },
-                            }}
-                            transition={{ duration: 0.4, ease: "easeOut" }}
-                            className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
-                          >
-                            {char}
-                          </motion.span>
-                        ))}
+                      {/* Second-to-last word - Orange gradient + Last word - Teal gradient */}
+                      <div className="flex justify-center">
+                        <div className="flex mr-6">
+                          {secondLastWord.split("").map((char, index) => (
+                            <motion.span
+                              key={`mid-${index}`}
+                              variants={{
+                                initial: { opacity: 0, y: 30 },
+                                animate: { opacity: 1, y: 0 },
+                              }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                              className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary will-change-[opacity,transform] inline-block pb-2"
+                            >
+                              {char}
+                            </motion.span>
+                          ))}
+                        </div>
+                        <div className="flex">
+                          {lastWord.split("").map((char, index) => (
+                            <motion.span
+                              key={`last-${index}`}
+                              variants={{
+                                initial: { opacity: 0, y: 30 },
+                                animate: { opacity: 1, y: 0 },
+                              }}
+                              transition={{ duration: 0.4, ease: "easeOut" }}
+                              className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
+                            >
+                              {char}
+                            </motion.span>
+                          ))}
+                        </div>
                       </div>
                     </>
                   );

@@ -3,6 +3,7 @@
 import { motion } from "framer-motion";
 import { ArrowRight, Target, Users, Sparkles } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 
 export default function HomeAbout() {
   return (
@@ -16,15 +17,8 @@ export default function HomeAbout() {
             viewport={{ once: true }}
             transition={{ duration: 0.8 }}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              className="inline-flex items-center space-x-2 px-4 py-2 rounded-full bg-brand-primary/10 border border-brand-primary/20 text-brand-primary text-xs font-black tracking-widest uppercase mb-8"
-            >
-              <Sparkles className="w-4 h-4" />
-              <span>About Siddhi Soft World</span>
-            </motion.div>
+
+
 
             <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight tracking-tighter">
               Driving Global <br />
@@ -40,9 +34,9 @@ export default function HomeAbout() {
                 { icon: Target, title: "Our Mission", desc: "To be the first choice for IT solutions globally." },
                 { icon: Users, title: "Expert Team", desc: "Dedicated professionals driven by excellence." },
               ].map((item, i) => (
-                <div key={i} className="space-y-3">
-                  <div className="w-10 h-10 rounded-xl bg-white/5 flex items-center justify-center border border-white/10">
-                    <item.icon className="w-5 h-5 text-brand-secondary" />
+                <div key={i} className="space-y-3 group/item">
+                  <div className="w-10 h-10 rounded-xl bg-brand-primary/5 flex items-center justify-center border border-brand-primary/20 transition-colors duration-500">
+                    <item.icon className="w-5 h-5 text-brand-primary" />
                   </div>
                   <h3 className="font-bold text-white uppercase text-sm tracking-widest">{item.title}</h3>
                   <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
@@ -52,50 +46,99 @@ export default function HomeAbout() {
 
             <Link
               href="/about"
-              className="group inline-flex items-center space-x-3 text-brand-primary font-black uppercase text-xs tracking-widest hover:text-white transition-colors"
+              className="group relative inline-block w-fit bg-brand-primary hover:bg-brand-secondary text-white font-black rounded-3xl transition-all duration-500 shadow-xl shadow-brand-primary/20 overflow-hidden hover:scale-105 active:scale-95 text-sm"
             >
-              <span>Discover Our Story</span>
-              <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+              {/* Shimmer Effect */}
+              <motion.div 
+                initial={{ x: "-100%" }}
+                whileHover={{ x: "100%" }}
+                transition={{ duration: 0.8, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" 
+              />
+
+              <motion.div 
+                className="px-8 py-4 flex items-center justify-center relative z-10"
+                initial="initial"
+                whileHover="hover"
+              >
+                <motion.span
+                  variants={{
+                    initial: { opacity: 0, x: -10, width: 0, marginRight: 0 },
+                    hover: { opacity: 1, x: 0, width: "auto", marginRight: 12 }
+                  }}
+                  className="overflow-hidden flex items-center"
+                >
+                  <ArrowRight className="w-5 h-5 text-white" />
+                </motion.span>
+                
+                <span className="tracking-widest uppercase">Discover Our Story</span>
+                
+                <motion.span
+                  variants={{
+                    initial: { opacity: 1, x: 0, width: "auto", marginLeft: 12 },
+                    hover: { opacity: 0, x: 10, width: 0, marginLeft: 0 }
+                  }}
+                  className="overflow-hidden flex items-center"
+                >
+                  <ArrowRight className="w-5 h-5 text-white" />
+                </motion.span>
+              </motion.div>
             </Link>
           </motion.div>
 
-          {/* Right: Visual Element (Glass Card Composition) */}
+          {/* Right: Half Earth with 10+ Years */}
           <motion.div
-            initial={{ opacity: 0, scale: 0.9, rotateY: 20 }}
-            whileInView={{ opacity: 1, scale: 1, rotateY: 0 }}
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
             viewport={{ once: true }}
             transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
-            className="relative perspective-1000"
+            className="relative flex flex-col items-center justify-end min-h-[500px]"
           >
-            <div className="relative z-10 glass-card p-8 rounded-[3rem] border border-white/10 shadow-3xl overflow-hidden aspect-square flex items-center justify-center">
-              <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-secondary/20 opacity-30" />
-              
-              <div className="text-center">
-                <div className="text-7xl md:text-9xl font-black text-white/5 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none">
-                  SSW
-                </div>
-                <div className="relative z-10 space-y-4">
-                  <div className="text-5xl md:text-7xl font-black bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-brand-secondary">
-                    10+
-                  </div>
-                  <div className="text-xs font-black tracking-[0.4em] uppercase text-gray-400">
-                    Years of Excellence
-                  </div>
-                </div>
+            {/* 10+ Years text floating above earth */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="relative z-20 text-center mb-2"
+            >
+              <div className="text-7xl md:text-[10rem] font-black bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-brand-secondary leading-none">
+                10+
               </div>
+              <div className="text-sm font-black tracking-[0.5em] uppercase text-gray-400 mt-4">
+                Years of Excellence
+              </div>
+            </motion.div>
+
+            {/* Glow ring around earth */}
+            <motion.div
+              animate={{ rotate: 360 }}
+              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-[-60px] w-[400px] h-[400px] rounded-full border border-cyan-500/10 z-0"
+            />
+            <motion.div
+              animate={{ rotate: -360 }}
+              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
+              className="absolute bottom-[-40px] w-[360px] h-[360px] rounded-full border border-brand-primary/10 z-0"
+            />
+
+            {/* Half Earth Image */}
+            <div className="relative w-full overflow-hidden rounded-t-full" style={{ height: '380px' }}>
+              <Image
+                src="/images/half-earth.png"
+                alt="Global digital network"
+                fill
+                className="object-cover object-top"
+                priority
+              />
+              {/* Top fade */}
+              <div className="absolute inset-x-0 top-0 h-20 bg-gradient-to-b from-bg-deep to-transparent z-10" />
+              {/* Bottom fade */}
+              <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-bg-deep to-transparent z-10" />
             </div>
 
-            {/* Floating Accents */}
-            <motion.div
-              animate={{ y: [0, -20, 0] }}
-              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -top-10 -right-10 w-32 h-32 bg-brand-primary/20 rounded-full blur-3xl"
-            />
-            <motion.div
-              animate={{ y: [0, 20, 0] }}
-              transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
-              className="absolute -bottom-10 -left-10 w-40 h-40 bg-brand-secondary/20 rounded-full blur-3xl"
-            />
+            {/* Bottom glow */}
+            <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[300px] h-[100px] bg-cyan-500/15 rounded-full blur-[60px] z-0" />
           </motion.div>
         </div>
       </div>

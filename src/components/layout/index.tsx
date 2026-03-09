@@ -113,12 +113,36 @@ export default function Header() {
                           <Link
                             key={item.name}
                             href={item.href}
-                            className="flex items-center space-x-3 p-2 rounded-xl hover:bg-white/5 transition-all group/item"
+                            className="flex items-center space-x-4 p-3 rounded-2xl hover:bg-white/[0.03] transition-all group/item"
                           >
-                            <div className="w-10 h-10 rounded-xl bg-brand-primary/10 flex items-center justify-center group-hover/item:bg-brand-primary/20">
-                              <item.icon className="w-4 h-4 text-brand-secondary group-hover/item:text-brand-primary" />
+                            <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+                              {/* Architectural Glass Slab */}
+                              <div className="absolute inset-0 bg-white/[0.03] border border-white/5 rounded-2xl group-hover/item:bg-white/[0.08] group-hover/item:border-white/20 group-hover/item:scale-110 transition-all duration-500 ease-out" />
+                              
+                              {/* Inner Glow Layer */}
+                              <div className="absolute inset-[2px] rounded-[14px] bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover/item:opacity-100 transition-opacity duration-500" />
+
+                              {/* Icon with 3D Motion */}
+                              <motion.div
+                                whileHover={{ rotateY: 180, scale: 1.2 }}
+                                transition={{ type: "spring", stiffness: 200, damping: 15 }}
+                                className="relative z-10"
+                              >
+                                <item.icon className="w-5 h-5 text-white/30 group-hover/item:text-white transition-colors duration-500" />
+                              </motion.div>
+
+                              {/* Shimmer Effect */}
+                              <div className="absolute inset-0 overflow-hidden rounded-2xl pointer-events-none">
+                                <motion.div 
+                                  initial={{ x: "-100%", opacity: 0 }}
+                                  whileHover={{ x: "100%", opacity: 1 }}
+                                  transition={{ duration: 0.6, ease: "easeInOut" }}
+                                  className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12 translate-z-0" 
+                                />
+                              </div>
                             </div>
-                            <span className="text-xs font-bold text-gray-300 group-hover/item:text-white">
+
+                            <span className="text-[13px] font-bold text-white/40 group-hover/item:text-white tracking-tight transition-colors duration-300">
                               {item.name}
                             </span>
                           </Link>
@@ -135,10 +159,18 @@ export default function Header() {
           <div className="flex-1 flex justify-end">
             <Link
               href="/contact"
-              className="bg-gradient-to-r from-[#38bdf8] to-[#0891b2] text-white text-[10px] font-black tracking-[0.2em] uppercase rounded-full transition-all duration-500 shadow-lg shadow-sky-500/20 hover:shadow-sky-500/40 group/cta overflow-hidden"
+              className="group relative inline-block w-fit bg-brand-primary hover:bg-brand-secondary text-white font-black rounded-3xl transition-all duration-500 shadow-xl shadow-brand-primary/20 overflow-hidden hover:scale-105 active:scale-95 text-xs"
             >
+              {/* Shimmer Effect */}
               <motion.div 
-                className="px-8 h-12 flex items-center justify-center"
+                initial={{ x: "-100%" }}
+                whileHover={{ x: "100%" }}
+                transition={{ duration: 0.8, ease: "linear" }}
+                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" 
+              />
+
+              <motion.div 
+                className="px-6 h-10 flex items-center justify-center relative z-10"
                 initial="initial"
                 whileHover="hover"
               >
@@ -149,10 +181,10 @@ export default function Header() {
                   }}
                   className="overflow-hidden flex items-center"
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-white" />
                 </motion.span>
                 
-                <span className="truncate">Start Journey</span>
+                <span className="truncate tracking-widest uppercase">Start Journey</span>
                 
                 <motion.span
                   variants={{
@@ -161,11 +193,11 @@ export default function Header() {
                   }}
                   className="overflow-hidden flex items-center"
                 >
-                  <ArrowRight className="w-4 h-4" />
+                  <ArrowRight className="w-4 h-4 text-white" />
                 </motion.span>
               </motion.div>
             </Link>
-          </div>
+            </div>
         </motion.div>
       </header>
     </>

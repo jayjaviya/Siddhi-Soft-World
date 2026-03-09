@@ -5,8 +5,9 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import AboutHero from "@/features/about/AboutHero";
 import Testimonials from "@/features/testimonials";
+import OurApproach from "@/features/approach/OurApproach";
 import HandshakeAnimation from "@/components/ui/HandshakeAnimation";
-import { Target, Eye, Shield, Globe, Landmark, Building2, ShoppingCart, Hotel, Sprout, PhoneCall, Rocket, ShieldCheck, Cpu, ArrowRight } from "lucide-react";
+import { Target, Eye, Shield, Globe, Landmark, Building2, ShoppingCart, Hotel, Sprout, PhoneCall, Rocket, ShieldCheck, Cpu, ArrowRight, ChevronDown } from "lucide-react";
 
 const PRINCIPLES = [
   { icon: Shield, title: "Standards", desc: "Dedicated to high standards in everything we do, ensuring quality and precision." },
@@ -71,6 +72,8 @@ export default function AboutPage() {
   });
 
   const x = useTransform(scrollYProgress, [0, 1], ["0px", scrollRange ? `-${scrollRange}px` : "0px"]);
+  const arrowOpacity = useTransform(scrollYProgress, [0, 0.08, 0.18], [1, 0.5, 0]);
+  const arrowX = useTransform(scrollYProgress, [0, 0.05, 0.18], ["0px", "-30px", "-120px"]);
 
   useEffect(() => {
     function measure() {
@@ -130,24 +133,25 @@ export default function AboutPage() {
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
           style={{ transformOrigin: 'right center' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 bg-brand-secondary/10 border border-brand-secondary/20 backdrop-blur-md p-[30px] rounded-[3rem]"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 border border-blue-400/15 p-[30px] rounded-[3rem]"
         >
           {PRINCIPLES.map((item, idx) => (
-            <motion.div
+            <div
               key={idx}
-              className="glass-card p-10 rounded-[2.5rem] group relative overflow-hidden hover:border-blue-400/50 hover:shadow-[0_20px_50px_rgba(37,99,235,0.2)] transition-all duration-500"
+              className="group relative rounded-3xl p-11 bg-transparent backdrop-blur-2xl border border-white/10 hover:border-brand-primary/60 hover:-translate-y-3 transition-all duration-700 overflow-hidden"
             >
-              <div className="absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-white/10 to-transparent pointer-events-none" />
-              <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-              
+              {/* Hover glow - subtle orange */}
+              <div className="absolute -top-20 -left-20 w-56 h-56 bg-brand-primary/0 group-hover:bg-brand-primary/[0.05] rounded-full blur-[80px] transition-all duration-700 pointer-events-none" />
+              <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-brand-primary/0 group-hover:bg-brand-primary/[0.03] rounded-full blur-[80px] transition-all duration-700 pointer-events-none" />
+
               <div className="relative z-10">
-                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 mx-auto group-hover:bg-white/10 transition-all duration-500 group-hover:rotate-12">
-                  <item.icon className="w-8 h-8 text-brand-primary group-hover:text-white transition-colors" />
+                <div className="w-14 h-14 border border-brand-primary/15 group-hover:border-brand-primary/40 rounded-xl flex items-center justify-center mb-7 mx-auto transition-all duration-500 group-hover:scale-110">
+                  <item.icon className="w-7 h-7 text-brand-primary transition-colors duration-500" />
                 </div>
-                <h3 className="text-2xl font-bold mb-4 text-center">{item.title}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed text-center">{item.desc}</p>
+                <h3 className="text-xl font-black mb-3 tracking-tight text-white/90 group-hover:text-white transition-colors duration-500 text-center">{item.title}</h3>
+                <p className="text-blue-200/40 leading-relaxed text-[15px] group-hover:text-blue-200/60 transition-colors duration-500 text-center">{item.desc}</p>
               </div>
-            </motion.div>
+            </div>
           ))}
         </motion.div>
       </section>
@@ -171,6 +175,57 @@ export default function AboutPage() {
 
               <div className="container mx-auto px-6 w-full flex-1 flex items-center">
                 <div className="relative w-full">
+                  {/* Scroll Down Arrow Indicator - Left side */}
+                  <motion.div
+                    className="absolute left-[6%] top-1/2 -translate-y-1/2 z-20 flex flex-col items-center gap-1 pointer-events-none hidden md:flex"
+                    style={{ opacity: arrowOpacity, x: arrowX }}
+                  >
+                    {/* Glowing backdrop */}
+                    <div className="absolute inset-0 -m-4 bg-brand-primary/5 rounded-full blur-2xl" />
+                    
+                    {/* "Scroll" label */}
+                    <motion.span
+                      className="text-[16px] font-black tracking-[0.3em] uppercase text-white/60 mb-3 relative"
+                      animate={{ opacity: [0.5, 1, 0.5] }}
+                      transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+                    >
+                      Scroll
+                    </motion.span>
+
+                    {/* Animated line */}
+                    <motion.div
+                      className="w-[2px] h-10 bg-gradient-to-b from-transparent via-brand-primary/40 to-transparent relative"
+                      animate={{ scaleY: [0.5, 1, 0.5], opacity: [0.3, 0.8, 0.3] }}
+                      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
+                    />
+
+                    {/* Stacked chevrons with staggered bounce */}
+                    {[0, 1, 2].map((i) => (
+                      <motion.div
+                        key={i}
+                        animate={{ 
+                          y: [0, 6, 0],
+                          opacity: [0.15 + i * 0.1, 0.7 - i * 0.15, 0.15 + i * 0.1]
+                        }}
+                        transition={{
+                          duration: 1.8,
+                          repeat: Infinity,
+                          ease: "easeInOut",
+                          delay: i * 0.15,
+                        }}
+                        className="relative"
+                      >
+                        <ChevronDown 
+                          className={`w-9 h-9 ${
+                            i === 0 ? 'text-brand-primary/70' : 
+                            i === 1 ? 'text-brand-primary/50' : 
+                            'text-brand-primary/30'
+                          }`}
+                          strokeWidth={2.5}
+                        />
+                      </motion.div>
+                    ))}
+                  </motion.div>
                   <motion.div ref={trackRef} className="flex gap-8 will-change-transform pl-[20%]" style={{ x }}>
                     {INDUSTRIES.map((industry, idx) => (
                       <motion.div
@@ -226,11 +281,31 @@ export default function AboutPage() {
 
                             {/* CTA Button */}
                             <motion.button 
-                              className="w-full py-3 px-4 rounded-xl bg-white/5 border border-white/8 text-sm font-black tracking-wide uppercase text-gray-300 group-hover:bg-brand-primary group-hover:border-brand-primary group-hover:text-white transition-all duration-300 flex items-center justify-between"
-                              whileHover={{ gap: 10 }}
+                              className="w-fit py-2.5 px-6 rounded-full bg-white/5 border border-white/10 text-[11px] font-black tracking-[0.2em] uppercase text-white/50 hover:text-white hover:bg-white/10 hover:border-white/20 transition-all duration-500 flex items-center gap-3 overflow-hidden shadow-xl"
+                              initial="initial"
+                              whileHover="hover"
                             >
-                              <span>Learn More</span>
-                              <ArrowRight className="w-4 h-4" />
+                              <div className="flex items-center relative z-10">
+                                <motion.span
+                                  variants={{
+                                    initial: { opacity: 0, x: -10, width: 0, marginRight: 0 },
+                                    hover: { opacity: 1, x: 0, width: "auto", marginRight: 8 }
+                                  }}
+                                  className="overflow-hidden flex items-center"
+                                >
+                                  <ArrowRight className="w-3.5 h-3.5" />
+                                </motion.span>
+                                <span>Learn More</span>
+                              </div>
+                              <motion.span
+                                variants={{
+                                  initial: { opacity: 1, x: 0, width: "auto" },
+                                  hover: { opacity: 0, x: 10, width: 0 }
+                                }}
+                                className="overflow-hidden flex items-center"
+                              >
+                                <ArrowRight className="w-3.5 h-3.5" />
+                              </motion.span>
                             </motion.button>
                           </div>
                         </div>
@@ -244,6 +319,9 @@ export default function AboutPage() {
           </div>
         </div>
       </section>
+
+      {/* Our Approach Section */}
+      <OurApproach />
 
       {/* Testimonials Section */}
       <div className="pt-24">
@@ -293,7 +371,7 @@ export default function AboutPage() {
               <h2 className="text-4xl md:text-6xl font-black mb-8 leading-tight">
                 Ready to take your <br />
                 infrastructure to the <br />
-                <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-brand-secondary">Next Level?</span>
+                <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Next Level?</span>
               </h2>
               
               <div className="space-y-6 mb-12">

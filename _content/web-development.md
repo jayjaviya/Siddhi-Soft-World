@@ -1,4 +1,4 @@
-# Web Development - Siddhi Soft World
+# Modern Web Development - Siddhi Soft World
 
 ## Overview
 Complex application solutions built for modern competition and scalability using the latest web technologies.

@@ -1,259 +1,304 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { Code, Globe, Server, Network, Database, ShieldCheck, Monitor, HelpCircle, HardDrive, Settings, ArrowRight } from "lucide-react";
+import { useRef, createRef, useMemo } from "react";
+import {
+  motion,
+  useScroll,
+  useTransform,
+  useInView,
+} from "framer-motion";
+import { ArrowRight } from "lucide-react";
 import Link from "next/link";
-import GlassStack from "@/components/ui/GlassStack";
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, Pagination } from 'swiper/modules';
-
-// Import Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+import Image from "next/image";
 
 const SERVICES = [
   {
     title: "Application Development",
     desc: "Drive efficiency and effectiveness with agile application solutions from us. Our proven methodology ensures you get products faster.",
-    icon: Monitor,
-    image: "/images/home/services/app-dev.webp",
-    notifications: [
-      { title: "Deployment Ready", subtitle: "Version 2.4 active", type: "success" },
-      { title: "Resource Sync", subtitle: "Cloud nodes balanced", type: "info" },
-      { title: "API Stats", subtitle: "99.9% Uptime", type: "stat" },
-    ]
+    image: "/images/home/services/app-dev-v2.png",
+    tags: ["Mobile Apps", "Cross-Platform", "Progressive Web Apps", "UI/UX Design"],
+    slug: "application-development",
   },
   {
     title: "Software Development",
     desc: "We specialize in custom software applications, custom programming, database design, and client-server development.",
-    icon: Code,
-    image: "/images/home/services/software-dev-new.webp",
-    notifications: [
-      { title: "Build Success", subtitle: "Artifacts generated", type: "success" },
-      { title: "Code Quality", subtitle: "A+ Rating", type: "info" },
-      { title: "CI/CD", subtitle: "Pipeline Idle", type: "stat" },
-    ]
+    image: "/images/home/services/software-dev-v2.jpg",
+    tags: ["Custom Software", "Database Design", "Client-Server", "Enterprise Solutions"],
+    slug: "software-development",
   },
   {
     title: "Web Development",
     desc: "Complex application solutions built for modern competition and scalability using the latest web technologies.",
-    icon: Globe,
-    image: "/images/home/services/web-dev-new.webp",
-    notifications: [
-      { title: "SSL Secure", subtitle: "Certificate valid", type: "success" },
-      { title: "Global CDN", subtitle: "12 Nodes active", type: "info" },
-      { title: "Core Web", subtitle: "LCP: 0.8s", type: "stat" },
-    ]
+    image: "/images/home/services/web-dev-v4.jpg",
+    tags: ["React / Next.js", "Full-Stack", "E-commerce", "CMS Development"],
+    slug: "web-development",
   },
   {
     title: "Managed Network Services",
-    desc: "Build robust networks with advanced technology. LAN/WAN services provide comprehensive network management.",
-    icon: Network,
-    image: "/images/home/services/network-services-new.webp",
-    notifications: [
-      { title: "Network Up", subtitle: "Fiber link stable", type: "success" },
-      { title: "Router Status", subtitle: "No Packet Loss", type: "info" },
-      { title: "Traffic", subtitle: "1.2 Gbps", type: "stat" },
-    ]
+    desc: "We provide various levels of support and help for your organization's computer networks, from basic to complex.",
+    image: "/images/home/services/network-services-v2.jpg",
+    tags: ["Network Support", "Infrastructure", "Connectivity", "Security"],
+    slug: "managed-network-services",
   },
   {
-    title: "Microsoft Windows Servers",
-    desc: "Planning, Designing & Implementation of Active Directory Network Infrastructure including multi forest and domain tree.",
-    icon: Server,
-    image: "/images/home/services/windows-server-new.webp",
-    notifications: [
-      { title: "AD Sync", subtitle: "Forest replications OK", type: "success" },
-      { title: "Patch MGMT", subtitle: "Updates pending: 0", type: "info" },
-      { title: "CPU Load", subtitle: "12% Total", type: "stat" },
-    ]
+    title: "Microsoft Windows Server",
+    desc: "Expert administration and support for Windows Server environments, ensuring reliability and performance.",
+    image: "/images/home/services/windows-server-v4.jpg",
+    tags: ["Active Directory", "IIS Server", "Group Policy", "Server Security"],
+    slug: "microsoft-windows-server",
   },
   {
     title: "Managed Services",
-    desc: "Our managed services simplify IT operations and provide proactive support to keep your business running smoothly.",
-    icon: Settings,
-    image: "/images/home/services/managed-services-new.webp",
-    notifications: [
-      { title: "SLA Status", subtitle: "100% Fulfilled", type: "success" },
-      { title: "Support", subtitle: "Response < 5min", type: "info" },
-      { title: "Incident", subtitle: "0 Critical", type: "stat" },
-    ]
+    desc: "Comprehensive outsourced management of your IT infrastructure and end-user systems, proactively managed under a subscription model.",
+    image: "/images/home/services/managed-services-v2.jpg",
+    tags: ["24/7 Monitoring", "IT Helpdesk", "Cloud Services", "Proactive Maintenance"],
+    slug: "managed-services",
   },
   {
     title: "Storage Management",
-    desc: "IBM SAN, Matrox NAS. Software RAID 0, 1, 5 and Hardware RAID - 0, 1, 5, 10 (Mirroring + Disk Striping).",
-    icon: HardDrive,
-    image: "/images/home/services/storage-mgmt-new.webp",
-    notifications: [
-      { title: "RAID Health", subtitle: "Array Optimized", type: "success" },
-      { title: "Disk Space", subtitle: "4.2 TB Free", type: "info" },
-      { title: "IOPS", subtitle: "120k Peak", type: "stat" },
-    ]
+    desc: "Optimizing AWS EC2 EBS and multi-cloud storage environments to reduce wastage and improve performance metrics.",
+    image: "/images/home/services/storage-mgmt-v2.jpg",
+    tags: ["EBS Optimization", "Capacity Planning", "Multi-Cloud Storage", "Cost Management"],
+    slug: "storage-management",
   },
   {
     title: "Internet Information Server",
     desc: "Installation, Configuration of FTP, Web, NNTP services. IIS Security and comprehensive performance tuning.",
-    icon: Database,
-    image: "/images/home/services/iis-server-new.webp",
-    notifications: [
-      { title: "IIS Active", subtitle: "Worker Process OK", type: "success" },
-      { title: "Req Logging", subtitle: "Real-time active", type: "info" },
-      { title: "Throughput", subtitle: "5.4k req/m", type: "stat" },
-    ]
+    image: "/images/home/services/iis-server-v2.jpg",
+    tags: ["IIS Configuration", "FTP Services", "Security Hardening", "Performance Tuning"],
+    slug: "internet-information-server",
   },
   {
     title: "Disaster Recovery & Backup",
     desc: "Acronis True Image Workstation-Desktop OS Images. Acronis Enterprise Server-Server recovery, bare metal Recovery.",
-    icon: ShieldCheck,
-    image: "/images/home/services/disaster-recovery-new.webp",
-    notifications: [
-      { title: "Backup Done", subtitle: "Full snapshot saved", type: "success" },
-      { title: "Recovery Pt", subtitle: "Point-in-time ready", type: "info" },
-      { title: "Redundancy", subtitle: "3x Nodes", type: "stat" },
-    ]
+    image: "/images/home/services/disaster-recovery-v2.webp",
+    tags: ["Acronis Backup", "Bare Metal Recovery", "Business Continuity", "Cloud Backup"],
+    slug: "disaster-recovery-backup",
   },
 ];
 
-export default function ServicesSection() {
+/* ═══════════════════════════════════════════════════════════════
+   NavItem — Highlights when its paired card section is in view
+   ═══════════════════════════════════════════════════════════════ */
+function NavItem({
+  service,
+  cardRef,
+  onClick,
+}: {
+  service: (typeof SERVICES)[0];
+  cardRef: React.RefObject<HTMLDivElement | null>;
+  onClick: () => void;
+}) {
+  const isInView = useInView(cardRef, {
+    margin: "-40% 0px -40% 0px",
+  });
+
   return (
-    <section className="mt-[25px] py-32 relative overflow-hidden bg-gradient-blue-night">
-      <div className="container mx-auto px-6">
-        <div className="flex flex-col items-center text-center mb-24 space-y-10">
-          <div className="max-w-4xl">
-            <h2 className="text-5xl md:text-7xl font-black tracking-tighter flex flex-row flex-wrap justify-center items-center gap-x-4 leading-[1.1] text-white">
-              <motion.span
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.1 }}
-              >
-                Services &
-              </motion.span>
-              <motion.span
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary"
-              >
-                Solutions
-              </motion.span>
-            </h2>
+    <button
+      onClick={onClick}
+      className="text-left group relative transition-all duration-500 ease-out py-1"
+    >
+      <motion.span
+        initial={false}
+        animate={{ 
+          color: isInView ? "#FFFFFF" : "rgba(255, 255, 255, 0.6)",
+          rotateX: isInView ? [90, 0] : 0,
+          opacity: isInView ? 1 : 0.6,
+          filter: isInView ? "blur(0px)" : "blur(1px)",
+        }}
+        transition={{ 
+          duration: 1.2, 
+          ease: [0.22, 1, 0.36, 1],
+        }}
+        className="block text-[clamp(1.25rem,2vw,2rem)] font-bold tracking-[-0.02em] origin-center"
+        style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}
+      >
+        {service.title}
+      </motion.span>
+    </button>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ParallaxImage — High-impact image with internal vertical motion
+   ═══════════════════════════════════════════════════════════════ */
+function ParallaxImage({ src, alt, priority }: { src: string; alt: string; priority?: boolean }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ["start end", "end start"],
+  });
+
+  // Increased parallax intensity for a more dramatic 'wow' factor
+  const y = useTransform(scrollYProgress, [0, 1], ["-25%", "25%"]);
+
+  return (
+    <div 
+      ref={containerRef} 
+      className="relative h-[50vh] md:h-[65vh] lg:h-[75vh] w-full overflow-hidden bg-white/5"
+    >
+      <motion.div style={{ y, scale: 1.3 }} className="relative w-full h-full">
+        <Image
+          src={src}
+          alt={alt}
+          fill
+          className="object-cover"
+          sizes="(max-width: 1024px) 100vw, 62vw"
+          priority={priority}
+        />
+      </motion.div>
+      {/* Premium dark gradient overlay */}
+      <div className="absolute inset-0 bg-gradient-to-t from-[#020a1a]/60 via-transparent to-transparent pointer-events-none" />
+    </div>
+  );
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   ServicesSection — Main Component (Interleaved Sequence)
+   ═══════════════════════════════════════════════════════════════ */
+export default function ServicesSection() {
+  // Create stable refs for each image section to trigger navigation
+  const imageRefs = useMemo(
+    () => SERVICES.map(() => createRef<HTMLDivElement>()),
+    []
+  );
+  
+  const cardRefs = useMemo(
+    () => SERVICES.map(() => createRef<HTMLDivElement>()),
+    []
+  );
+
+  return (
+    <section className="relative" style={{ background: "#020a1a" }}>
+      {/* ─── Section Header — scrolls away naturally ─── */}
+      <div className="pt-32 pb-16">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
+          <div className="text-center">
+            <motion.h2
+              initial={{ opacity: 0, y: 40 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+              className="text-6xl md:text-8xl lg:text-[120px] font-black tracking-[-0.04em] text-white leading-[0.9]"
+            >
+              Services
+            </motion.h2>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.2 }}
+              className="text-white/40 max-w-2xl text-base md:text-lg leading-relaxed mx-auto mt-10"
+            >
+              Full-spectrum IT capabilities under one roof. Whether you need
+              application development or ongoing infrastructure support, we
+              have the expertise to deliver.
+            </motion.p>
           </div>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="text-white/60 max-w-2xl text-lg leading-relaxed font-medium mx-auto"
-          >
-            We deliver maximum targeted results through our global software outsourcing model and specialized technological expertise.
-          </motion.p>
         </div>
+      </div>
 
-        <div className="services-slider-container max-w-6xl mx-auto">
-          <Swiper
-            modules={[Autoplay, Pagination]}
-            spaceBetween={50}
-            slidesPerView={1}
-            speed={600}
-            autoplay={{
-              delay: 8000,
-              disableOnInteraction: true,
-            }}
-            pagination={{ clickable: true }}
-            className="overflow-visible pb-24"
-          >
-            {SERVICES.map((service, idx) => (
-              <SwiperSlide key={idx} className="h-auto">
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center text-white">
-                  {/* Left Column: Service Card */}
-                  <motion.div
-                    initial={{ opacity: 0, x: -50 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.8 }}
-                    className="glass-card group p-12 rounded-2xl border border-white/5 hover:border-brand-secondary/50 relative overflow-hidden flex flex-col h-full min-h-[450px] transition-all duration-500"
+      {/* ─── Services Content ─── */}
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-12 pt-[100px]">
+        <div className="flex flex-col lg:flex-row gap-0">
+          {/* ═══ Left Column — Sticky Navigation ═══ */}
+          <div className="w-full lg:w-[38%] shrink-0">
+            <div className="lg:sticky lg:top-[120px] pb-12">
+              <nav className="hidden lg:flex flex-col gap-2 w-full">
+                {SERVICES.map((s, idx) => (
+                  <NavItem
+                    key={idx}
+                    service={s}
+                    cardRef={imageRefs[idx]} // Triggered by image now
+                    onClick={() =>
+                      imageRefs[idx].current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      })
+                    }
+                  />
+                ))}
+              </nav>
+
+              {/* Mobile Nav Pills */}
+              <div className="lg:hidden flex overflow-x-auto gap-2 py-4 -mx-2 px-2 w-full">
+                {SERVICES.map((s, idx) => (
+                  <button
+                    key={idx}
+                    onClick={() =>
+                      imageRefs[idx].current?.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      })
+                    }
+                    className="whitespace-nowrap px-4 py-2 rounded-full text-sm font-semibold transition-all duration-300 shrink-0 bg-white/5 text-white/40 hover:text-white/60"
                   >
-                    <div className="flex-1">
-                      <div className="w-20 h-20 bg-brand-secondary/10 rounded-xl flex items-center justify-center mb-10 group-hover:bg-brand-secondary group-hover:scale-110 group-hover:rotate-6 transition-all duration-700">
-                        <service.icon className="w-10 h-10 text-brand-secondary group-hover:text-white transition-colors" />
-                      </div>
-                      <h3 className="text-3xl font-black mb-6 tracking-tight text-white">{service.title}</h3>
-                      <p className="text-white/40 leading-relaxed text-lg font-medium">
-                        {service.desc}
-                      </p>
-                    </div>
+                    {s.title}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
 
-                    <div className="mt-12 pt-8 border-t border-white/5 group-hover:border-brand-secondary/20 transition-colors flex items-center justify-between">
-                      <Link
-                        href={`/services/${service.title.toLowerCase().replace(/ & /g, '-').replace(/ /g, '-')}`}
-                        className="group relative inline-block w-fit bg-brand-primary hover:bg-brand-secondary text-white font-black rounded-3xl transition-all duration-500 shadow-xl shadow-brand-primary/20 overflow-hidden hover:scale-105 active:scale-95 text-sm"
-                      >
-                        {/* Shimmer Effect */}
-                        <motion.div 
-                          initial={{ x: "-100%" }}
-                          whileHover={{ x: "100%" }}
-                          transition={{ duration: 0.8, ease: "linear" }}
-                          className="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12 pointer-events-none" 
-                        />
-
-                        <motion.div 
-                          className="px-8 py-4 flex items-center justify-center relative z-10"
-                          initial="initial"
-                          whileHover="hover"
-                        >
-                          <motion.span
-                            variants={{
-                              initial: { opacity: 0, x: -10, width: 0, marginRight: 0 },
-                              hover: { opacity: 1, x: 0, width: "auto", marginRight: 12 }
-                            }}
-                            className="overflow-hidden flex items-center"
-                          >
-                            <ArrowRight className="w-5 h-5 text-white" />
-                          </motion.span>
-                          
-                          <span className="tracking-widest uppercase">Explore</span>
-                          
-                          <motion.span
-                            variants={{
-                              initial: { opacity: 1, x: 0, width: "auto", marginLeft: 12 },
-                              hover: { opacity: 0, x: 10, width: 0, marginLeft: 0 }
-                            }}
-                            className="overflow-hidden flex items-center"
-                          >
-                            <ArrowRight className="w-5 h-5 text-white" />
-                          </motion.span>
-                        </motion.div>
-                      </Link>
-                    </div>
-                    
-                    <div className="absolute -bottom-10 -right-10 w-40 h-40 bg-brand-secondary/5 rounded-full blur-[60px] group-hover:bg-brand-secondary/10 transition-colors" />
-                  </motion.div>
-
-                  {/* Right Column: Glass Stack Animation */}
-                    <div className="flex flex-col h-full justify-center">
-                      <motion.div
-                        initial={{ opacity: 0, x: 50 }}
-                        whileInView={{ opacity: 1, x: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.8 }}
-                      >
-                        <GlassStack 
-                          icon={service.icon} 
-                          title={service.title} 
-                          image={service.image}
-                          notifications={service.notifications as any}
-                        />
-                      </motion.div>
-                    </div>
+          {/* ═══ Right Column — Interleaved Sequence ═══ */}
+          <div className="w-full lg:w-[62%] relative flex flex-col gap-0">
+            {SERVICES.map((s, idx) => (
+              <div key={idx} className="flex flex-col">
+                {/* Image Segment — Slides up first */}
+                <div ref={imageRefs[idx]} className="mb-0">
+                  <ParallaxImage 
+                    src={s.image} 
+                    alt={s.title} 
+                    priority={idx < 1} 
+                  />
                 </div>
-              </SwiperSlide>
+
+                {/* Card Segment — Follows immediately */}
+                <div 
+                  ref={cardRefs[idx]}
+                  className="bg-[#020a1a] py-6 md:py-8 lg:py-10 px-6 md:px-8 lg:px-10 relative z-10 border border-white/5 shadow-[0_20px_50px_-10px_rgba(0,0,0,0.5)]"
+                >
+                  <div className="flex items-baseline gap-3 mb-6">
+                    <span className="text-white/20 font-mono text-xl md:text-2xl lg:text-3xl tracking-widest leading-none">
+                      [{idx + 1 < 10 ? "0" : ""}<span className="text-white">{idx + 1}</span>]
+                    </span>
+                    <h3 className="text-2xl md:text-3xl lg:text-4xl font-black text-white tracking-[-0.03em] leading-tight">
+                      {s.title}
+                    </h3>
+                  </div>
+
+                  <p className="text-white/45 text-base md:text-lg leading-relaxed max-w-2xl mb-10">
+                    {s.desc}
+                  </p>
+
+                  <div className="flex items-center justify-between gap-4 border-t border-white/5 pt-8">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-2">
+                      {s.tags.map((tag) => (
+                        <div 
+                          key={tag} 
+                          className="group/tag flex items-center bg-white/[0.03] border-l-2 border-brand-primary/30 hover:border-brand-primary py-1.5 px-3 transition-all duration-300"
+                        >
+                          <span className="text-[10px] lg:text-[11px] font-black uppercase tracking-[0.15em] text-white/40 group-hover/tag:text-white transition-colors cursor-default whitespace-nowrap">
+                            {tag}
+                          </span>
+                        </div>
+                      ))}
+                    </div>
+                    <Link
+                      href={`/services/${s.slug}`}
+                      className="shrink-0 w-12 h-12 rounded-full border border-brand-primary/20 flex items-center justify-center text-brand-primary hover:text-white hover:bg-brand-primary transition-all duration-300 group/arrow shadow-xl"
+                    >
+                      <ArrowRight className="w-5 h-5 group-hover/arrow:translate-x-0.5 transition-transform duration-300" />
+                    </Link>
+                  </div>
+                </div>
+
+              </div>
             ))}
-          </Swiper>
-          
-          {/* Custom Pagination */}
-          <div className="custom-services-pagination mt-4 flex items-center justify-center w-full" />
+            
+            {/* 30px bottom padding after last card as requested */}
+            <div className="h-[30px]" />
+          </div>
         </div>
       </div>
     </section>

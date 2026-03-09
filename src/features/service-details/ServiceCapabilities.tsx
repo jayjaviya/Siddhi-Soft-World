@@ -17,7 +17,7 @@ const ICONS = [Zap, Shield, Cpu, Globe, Cog, CheckCircle2];
 export default function ServiceCapabilities({ capabilities }: ServiceCapabilitiesProps) {
   return (
     <section className="py-24 bg-bg-deep/50 relative">
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="relative z-10">
         <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -32,7 +32,7 @@ export default function ServiceCapabilities({ capabilities }: ServiceCapabilitie
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
           {capabilities.map((item, idx) => {
             const Icon = ICONS[idx % ICONS.length];
             return (

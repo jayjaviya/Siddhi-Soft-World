@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Dancing_Script } from "next/font/google";
+import { Inter, Dancing_Script, Space_Grotesk } from "next/font/google";
 import "../styles/globals.css";
 import Header from "@/components/layout";
 import Footer from "@/components/layout/Footer";
@@ -9,6 +9,10 @@ const inter = Inter({ subsets: ["latin"] });
 const dancingScript = Dancing_Script({ 
   subsets: ["latin"],
   variable: "--font-cursive",
+});
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  variable: "--font-display",
 });
 
 export const metadata: Metadata = {
@@ -22,8 +26,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${inter.className} ${dancingScript.variable} antialiased bg-background text-foreground`}>
+    <html lang="en" suppressHydrationWarning>
+      <body className={`${inter.className} ${dancingScript.variable} ${spaceGrotesk.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
         <div className="aurora-bg" />
         <div className="flex flex-col min-h-screen">
           <Header />

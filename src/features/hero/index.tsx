@@ -260,7 +260,7 @@ export default function Hero() {
           viewport={{ once: false, amount: 0.2 }}
           transition={{ duration: 0.8, ease: [0.32, 0.72, 0, 1] }}
           style={{ transformOrigin: 'left center' }}
-          className="grid grid-cols-1 md:grid-cols-3 gap-12 bg-brand-secondary/10 border border-brand-secondary/20 backdrop-blur-md p-[30px] rounded-[3rem]"
+          className="grid grid-cols-1 md:grid-cols-3 gap-8 border border-blue-400/15 p-[30px] rounded-[3rem]"
         >
             {[
               { icon: Server, title: "Server Excellence", desc: "Enterprise-grade infrastructure management with 24/7 reliability." },
@@ -269,20 +269,18 @@ export default function Hero() {
             ].map((item, idx) => (
               <div
                 key={idx}
-                className="glass-card p-12 rounded-[3.5rem] group relative overflow-hidden hover:border-blue-400/50 hover:shadow-[0_20px_50px_rgba(37,99,235,0.2)] transition-all duration-500"
+                className="group relative rounded-3xl p-11 bg-[#061428]/80 backdrop-blur-2xl border border-white/10 hover:border-brand-primary/60 hover:-translate-y-3 transition-all duration-700 overflow-hidden"
               >
-                {/* White Gradient at bottom (Always present, behind blue) */}
-                <div className="absolute inset-x-0 bottom-0 h-24 bg-gradient-to-t from-white/10 to-transparent pointer-events-none" />
-                
-                {/* Blue Hover Background (Appears on hover) */}
-                <div className="absolute inset-0 bg-blue-600/20 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-                
+                {/* Hover glow - subtle orange */}
+                <div className="absolute -top-20 -left-20 w-56 h-56 bg-brand-primary/0 group-hover:bg-brand-primary/[0.05] rounded-full blur-[80px] transition-all duration-700 pointer-events-none" />
+                <div className="absolute -bottom-20 -right-20 w-56 h-56 bg-brand-primary/0 group-hover:bg-brand-primary/[0.03] rounded-full blur-[80px] transition-all duration-700 pointer-events-none" />
+
                 <div className="relative z-10">
-                  <div className="w-16 h-16 bg-white/5 rounded-[2rem] flex items-center justify-center mb-8 group-hover:bg-white/10 transition-all duration-500 group-hover:rotate-12">
-                    <item.icon className="w-8 h-8 text-brand-secondary group-hover:text-white transition-colors" />
+                  <div className="w-14 h-14 border border-brand-primary/15 group-hover:border-brand-primary/40 rounded-xl flex items-center justify-center mb-7 transition-all duration-500 group-hover:scale-110">
+                    <item.icon className="w-7 h-7 text-brand-primary transition-colors duration-500" />
                   </div>
-                  <h3 className="text-2xl font-black mb-4 tracking-tight">{item.title}</h3>
-                  <p className="text-gray-400 leading-relaxed text-lg">{item.desc}</p>
+                  <h3 className="text-xl font-black mb-3 tracking-tight text-white/90 group-hover:text-white transition-colors duration-500">{item.title}</h3>
+                  <p className="text-blue-200/40 leading-relaxed text-[15px] group-hover:text-blue-200/60 transition-colors duration-500">{item.desc}</p>
                 </div>
               </div>
             ))}

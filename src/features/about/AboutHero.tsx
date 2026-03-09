@@ -88,27 +88,36 @@ export default function AboutHero() {
                 ))}
               </div>
               <div className="flex flex-wrap justify-center overflow-hidden">
-                {"DIGITAL EVOLUTION".split(" ").map((word, wIdx) => (
-                  <div key={wIdx} className="flex mr-4">
-                    {word.split("").map((char, index) => (
-                      <motion.span
-                        key={index}
-                        variants={{
-                          initial: { opacity: 0, y: 30 },
-                          animate: { opacity: 1, y: 0 },
-                        }}
-                        transition={{ duration: 0.4, ease: "easeOut" }}
-                        style={{ 
-                          backgroundSize: '1000% 100%', 
-                          backgroundPosition: `${(index / 9) * 100}% 0`,
-                        }}
-                        className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
-                      >
-                        {char}
-                      </motion.span>
-                    ))}
-                  </div>
-                ))}
+                <div className="flex mr-4">
+                  {"DIGITAL".split("").map((char, index) => (
+                    <motion.span
+                      key={index}
+                      variants={{
+                        initial: { opacity: 0, y: 30 },
+                        animate: { opacity: 1, y: 0 },
+                      }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary will-change-[opacity,transform] inline-block pb-2"
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                </div>
+                <div className="flex">
+                  {"EVOLUTION".split("").map((char, index) => (
+                    <motion.span
+                      key={index}
+                      variants={{
+                        initial: { opacity: 0, y: 30 },
+                        animate: { opacity: 1, y: 0 },
+                      }}
+                      transition={{ duration: 0.4, ease: "easeOut" }}
+                      className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
+                    >
+                      {char}
+                    </motion.span>
+                  ))}
+                </div>
               </div>
             </motion.h1>
 

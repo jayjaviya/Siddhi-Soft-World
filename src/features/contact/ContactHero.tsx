@@ -3,6 +3,7 @@
 import { motion, useScroll, useTransform } from "framer-motion";
 import { ChevronRight, Mail, Phone, MessageSquare } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { useRef } from "react";
 
 export default function ContactHero() {
@@ -27,13 +28,21 @@ export default function ContactHero() {
       <div className="sticky top-0 h-[80vh] md:h-[90vh] w-full flex items-center justify-center overflow-hidden">
         <motion.div
           style={{ scale, borderTopLeftRadius: borderRadius, borderTopRightRadius: borderRadius }}
-          className="relative w-full h-full overflow-hidden shadow-2xl shadow-brand-primary/20 bg-gradient-to-br from-brand-primary/10 via-bg-deep to-brand-secondary/10"
+          className="relative w-full h-full overflow-hidden shadow-2xl shadow-brand-primary/20 bg-bg-deep"
         >
-          {/* Background Elements */}
-          <div className="absolute inset-0 z-0 overflow-hidden select-none pointer-events-none">
-            <div className="absolute inset-0 bg-gradient-to-b from-bg-deep via-transparent to-bg-deep opacity-90" />
-            <div className="absolute inset-0 bg-black/40 z-10 backdrop-blur-[2px]" />
-            <div className="absolute inset-0 bg-gradient-to-b from-bg-deep/60 via-transparent to-bg-deep/90 z-10" />
+          {/* Background Image & Overlays */}
+          <div className="absolute inset-0 z-0">
+            <Image
+              src="/images/contact/image.png"
+              alt="Contact Background"
+              fill
+              className="object-cover"
+              priority
+            />
+            <div className="absolute inset-0 bg-bg-deep/75 backdrop-blur-[2px] z-10" />
+            <div className="absolute inset-0 bg-gradient-to-b from-bg-deep via-transparent to-bg-deep z-10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-bg-deep/80 via-transparent to-bg-deep/80 z-10" />
+          </div>
             
             {/* Ambient Blurs */}
             <motion.div 
@@ -46,7 +55,6 @@ export default function ContactHero() {
               transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
               className="absolute bottom-[-10%] right-[-5%] w-[500px] h-[500px] bg-brand-secondary/10 rounded-full blur-[100px] z-20" 
             />
-          </div>
 
           <motion.div 
             style={{ opacity, y }}
@@ -87,27 +95,36 @@ export default function ContactHero() {
                   ))}
                 </div>
                 <div className="flex flex-wrap justify-center overflow-hidden">
-                  {"INNOVATE TOGETHER".split(" ").map((word, wIdx) => (
-                    <div key={wIdx} className="flex mr-4">
-                      {word.split("").map((char, index) => (
-                        <motion.span
-                          key={index}
-                          variants={{
-                            initial: { opacity: 0, y: 30 },
-                            animate: { opacity: 1, y: 0 },
-                          }}
-                          transition={{ duration: 0.4, ease: "easeOut" }}
-                          style={{ 
-                            backgroundSize: '1000% 100%', 
-                            backgroundPosition: `${(index / 9) * 100}% 0`,
-                          }}
-                          className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
-                        >
-                          {char}
-                        </motion.span>
-                      ))}
-                    </div>
-                  ))}
+                  <div className="flex mr-4">
+                    {"INNOVATE".split("").map((char, index) => (
+                      <motion.span
+                        key={index}
+                        variants={{
+                          initial: { opacity: 0, y: 30 },
+                          animate: { opacity: 1, y: 0 },
+                        }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary will-change-[opacity,transform] inline-block pb-2"
+                      >
+                        {char}
+                      </motion.span>
+                    ))}
+                  </div>
+                  <div className="flex">
+                    {"TOGETHER".split("").map((char, index) => (
+                      <motion.span
+                        key={index}
+                        variants={{
+                          initial: { opacity: 0, y: 30 },
+                          animate: { opacity: 1, y: 0 },
+                        }}
+                        transition={{ duration: 0.4, ease: "easeOut" }}
+                        className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
+                      >
+                        {char}
+                      </motion.span>
+                    ))}
+                  </div>
                 </div>
               </motion.h1>
 

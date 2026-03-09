@@ -17,7 +17,7 @@ const DEFAULT_STEPS = [
 export default function ServiceProcess() {
   return (
     <section className="py-32 relative overflow-hidden">
-      <div className="container mx-auto px-6 relative z-10">
+      <div className="relative z-10">
         <div className="text-center mb-20">
 
           <motion.h2
@@ -28,6 +28,9 @@ export default function ServiceProcess() {
           >
             Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Approach</span>
           </motion.h2>
+          <p className="text-xl text-gray-400 max-w-2xl mx-auto mt-6">
+            A proven, structured methodology that transforms complex challenges into scalable, high-performance solutions.
+          </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 relative">

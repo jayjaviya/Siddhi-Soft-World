@@ -51,7 +51,7 @@ export default function FAQ() {
   const [activeIndex, setActiveIndex] = useState<number | null>(null);
 
   return (
-    <section className="py-32 relative overflow-hidden bg-gradient-blue-soft">
+    <section className="py-32 relative bg-gradient-blue-soft">
       {/* Background Image for Header */}
       <div className="absolute top-0 left-0 w-full h-[600px] overflow-hidden -z-20">
         <motion.div 
@@ -76,85 +76,97 @@ export default function FAQ() {
       <div className="absolute bottom-0 right-1/4 w-[500px] h-[500px] bg-brand-secondary/10 rounded-full blur-[120px] -z-10" />
 
       <div className="container mx-auto px-6 relative z-10 text-white">
-        <div className="text-center mb-20 pt-10">
-          <motion.h2 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.1 }}
-            className="text-4xl md:text-7xl font-black mb-8 tracking-tighter"
-          >
-            Frequently Asked <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Questions</span>
-          </motion.h2>
-          <motion.p 
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-xl md:text-2xl text-white/60 max-w-3xl mx-auto font-medium leading-relaxed"
-          >
-            Everything you need to know about our services, process, and tech expertise. 
-            We're here to help you navigate your digital transformation.
-          </motion.p>
-        </div>
-
-        <div className="max-w-4xl mx-auto space-y-4">
-          {FAQ_DATA.map((faq, idx) => (
-            <motion.div
-              key={idx}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.05 }}
-              className={`group overflow-hidden rounded-3xl border transition-all duration-500 ${
-                activeIndex === idx 
-                  ? "bg-white/5 border-brand-secondary/30 shadow-2xl shadow-brand-secondary/5" 
-                  : "bg-white/[0.02] border-white/5 hover:border-white/10"
-              }`}
-            >
-              <button
-                onClick={() => setActiveIndex(activeIndex === idx ? null : idx)}
-                className="w-full p-8 flex items-center justify-between text-left transition-colors"
+        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
+          {/* Left Column: Details (Sticky) */}
+          <div className="w-full lg:w-5/12 shrink-0">
+            <div className="lg:sticky lg:top-32 h-fit">
+              <motion.div
+                initial={{ opacity: 0, x: -20 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.8 }}
               >
-                <div className="flex items-center gap-6">
-                  <span className={`text-sm font-black tracking-widest transition-colors ${
-                    activeIndex === idx ? "text-brand-secondary" : "text-white/20"
-                  }`}>
-                    {String(idx + 1).padStart(2, '0')}
-                  </span>
-                  <h3 className={`text-xl font-bold tracking-tight transition-colors ${
-                    activeIndex === idx ? "text-white" : "text-white/70 group-hover:text-white"
-                  }`}>
-                    {faq.question}
-                  </h3>
+                <h2 className="text-4xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9]">
+                  Frequently Asked <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Questions</span>
+                </h2>
+                <p className="text-lg md:text-xl text-white/60 font-medium leading-relaxed mb-12">
+                  Everything you need to know about our services, process, and tech expertise. 
+                  We're here to help you navigate your digital transformation.
+                </p>
+                
+                <div className="pt-8 border-t border-white/5">
+                  <p className="text-white/40 font-medium italic">
+                    Still have questions? Reach out to our expert team for a personalized consultation.
+                  </p>
                 </div>
-                <div className={`shrink-0 w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 ${
-                  activeIndex === idx 
-                    ? "bg-brand-secondary border-brand-secondary text-white rotate-180" 
-                    : "bg-white/5 border-white/10 text-white/40 group-hover:text-white group-hover:border-white/20"
-                }`}>
-                  {activeIndex === idx ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
-                </div>
-              </button>
+              </motion.div>
+            </div>
+          </div>
 
-              <AnimatePresence>
-                {activeIndex === idx && (
-                  <motion.div
-                    initial={{ height: 0, opacity: 0 }}
-                    animate={{ height: "auto", opacity: 1 }}
-                    exit={{ height: 0, opacity: 0 }}
-                    transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
-                  >
-                    <div className="px-8 pb-8 pt-0 ml-16">
-                      <p className="text-lg text-white/40 leading-relaxed font-medium max-w-3xl">
-                        {faq.answer}
-                      </p>
-                    </div>
-                  </motion.div>
-                )}
-              </AnimatePresence>
-            </motion.div>
-          ))}
+          {/* Right Column: FAQ Accordion (Scrollable) */}
+          <div className="flex-1 space-y-4">
+            {FAQ_DATA.map((faq, idx) => (
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ delay: idx * 0.05 }}
+                className={`group overflow-hidden rounded-3xl border transition-all duration-500 ${
+                  activeIndex === idx 
+                    ? "bg-white/5 border-brand-primary/30 shadow-2xl shadow-brand-primary/5" 
+                    : "bg-white/[0.02] border-white/5 hover:border-white/10"
+                }`}
+              >
+                <button
+                  onClick={() => setActiveIndex(activeIndex === idx ? null : idx)}
+                  className="w-full p-8 flex items-center justify-between text-left transition-colors"
+                >
+                  <div className="flex items-center gap-6">
+                    <span className="text-sm font-black tracking-widest transition-colors">
+                      {idx < 9 ? (
+                        <>
+                          <span className="text-white/20">0</span>
+                          <span className="text-white">{idx + 1}</span>
+                        </>
+                      ) : (
+                        <span className="text-white">{idx + 1}</span>
+                      )}
+                    </span>
+                    <h3 className={`text-xl font-bold tracking-tight transition-colors ${
+                      activeIndex === idx ? "text-white" : "text-white/70 group-hover:text-white"
+                    }`}>
+                      {faq.question}
+                    </h3>
+                  </div>
+                  <div className={`shrink-0 w-10 h-10 rounded-full border flex items-center justify-center transition-all duration-500 ${
+                    activeIndex === idx 
+                      ? "bg-brand-primary border-brand-primary text-white rotate-180" 
+                      : "bg-white/5 border-white/10 text-white/40 group-hover:text-white group-hover:border-white/20"
+                  }`}>
+                    {activeIndex === idx ? <Minus className="w-4 h-4" /> : <Plus className="w-4 h-4" />}
+                  </div>
+                </button>
+
+                <AnimatePresence>
+                  {activeIndex === idx && (
+                    <motion.div
+                      initial={{ height: 0, opacity: 0 }}
+                      animate={{ height: "auto", opacity: 1 }}
+                      exit={{ height: 0, opacity: 0 }}
+                      transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
+                    >
+                      <div className="px-8 pb-8 pt-0 ml-16">
+                        <p className="text-lg text-white/40 leading-relaxed font-medium max-w-3xl">
+                          {faq.answer}
+                        </p>
+                      </div>
+                    </motion.div>
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ))}
+          </div>
         </div>
       </div>
     </section>

@@ -1,4 +1,4 @@
-# Storage Management - Siddhi Soft World
+# Smart Storage Management - Siddhi Soft World
 
 ## Overview
 IBM SAN, Matrox NAS. Software RAID 0, 1, 5 and Hardware RAID - 0, 1, 5, 10 (Mirroring + Disk Striping).

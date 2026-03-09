@@ -119,7 +119,7 @@ export default function Testimonials() {
               className="relative"
             >
               {/* Main Card */}
-              <div className="relative p-10 md:p-14 rounded-[3rem] border border-white/10 bg-gradient-to-br from-[#0f1117] to-[#161822] shadow-2xl overflow-hidden h-[420px] flex flex-col">
+              <div className="relative p-10 md:p-14 rounded-[3rem] border border-white/10 bg-gradient-to-br from-[#0a1628] to-[#0f1d35] shadow-2xl overflow-hidden h-[420px] flex flex-col">
                 {/* Decorative Quote */}
                 <div className="absolute top-8 right-8 opacity-5">
                   <Quote className="w-32 h-32" />
@@ -159,7 +159,7 @@ export default function Testimonials() {
             {/* Left Arrow */}
             <button
               onClick={prev}
-              className="w-12 h-12 rounded-full border border-white/10 bg-gradient-to-br from-[#0f1117] to-[#161822] flex items-center justify-center hover:border-white/30 hover:from-[#141620] hover:to-[#1c1e2e] transition-all duration-300"
+              className="w-12 h-12 rounded-full border border-white/10 bg-gradient-to-br from-[#0a1628] to-[#0f1d35] flex items-center justify-center hover:border-white/30 hover:from-[#0d1a30] hover:to-[#14243f] transition-all duration-300"
             >
               <ChevronLeft className="w-5 h-5 text-white" />
             </button>
@@ -185,7 +185,7 @@ export default function Testimonials() {
             {/* Right Arrow */}
             <button
               onClick={next}
-              className="w-12 h-12 rounded-full border border-white/10 bg-gradient-to-br from-[#0f1117] to-[#161822] flex items-center justify-center hover:border-white/30 hover:from-[#141620] hover:to-[#1c1e2e] transition-all duration-300"
+              className="w-12 h-12 rounded-full border border-white/10 bg-gradient-to-br from-[#0a1628] to-[#0f1d35] flex items-center justify-center hover:border-white/30 hover:from-[#0d1a30] hover:to-[#14243f] transition-all duration-300"
             >
               <ChevronRight className="w-5 h-5 text-white" />
             </button>

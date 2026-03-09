@@ -38,7 +38,7 @@ export default function ContactPage() {
               className="text-5xl md:text-7xl font-bold mb-6"
             >
               Let&apos;s Build Something <br />
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-brand-secondary">Extraordinary</span>
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Extraordinary</span>
             </motion.h2>
             <p className="text-gray-400 text-xl leading-relaxed max-w-2xl mx-auto">
               Whether you have a specific project in mind or just want to explore how we can help your business grow, we&apos;re here to listen and provide expert guidance.
@@ -124,7 +124,7 @@ export default function ContactPage() {
             viewport={{ once: true }}
             className="text-5xl md:text-7xl font-bold mb-8"
           >
-            Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary to-brand-secondary">Locations</span>
+            Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Locations</span>
           </motion.h2>
           <p className="text-gray-400 text-xl leading-relaxed max-w-2xl mx-auto">Visit us at our offices in Vadodara and Ahmedabad</p>
         </div>
