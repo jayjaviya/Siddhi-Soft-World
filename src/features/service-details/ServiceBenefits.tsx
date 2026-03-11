@@ -85,7 +85,7 @@ export default function ServiceBenefits({ benefits }: ServiceBenefitsProps) {
 
   return (
     <section className="py-32 bg-white/[0.01]">
-      <div>
+      <div className="container mx-auto px-6">
         <div className="text-center mb-16">
           <motion.h2
             initial={{ opacity: 0, y: 20 }}
@@ -101,7 +101,7 @@ export default function ServiceBenefits({ benefits }: ServiceBenefitsProps) {
         </div>
 
         {/* Vertical Slider */}
-        <div className="relative">
+        <div className="relative max-w-3xl mx-auto">
           {/* Slider Content */}
           <div className="relative overflow-hidden rounded-[2.5rem] min-h-[200px]">
             <AnimatePresence mode="wait" custom={direction}>

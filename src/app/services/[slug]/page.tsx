@@ -111,6 +111,7 @@ export default async function ServicePage({ params }: { params: Promise<{ slug: 
         
         <div className="flex-1 min-w-0">
           <ServiceOverview 
+            title={data.title}
             overview={data.overview}
             summary={data.summary}
           />

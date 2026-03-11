@@ -5,7 +5,6 @@ import { motion, useScroll, useTransform } from "framer-motion";
 import Link from "next/link";
 import AboutHero from "@/features/about/AboutHero";
 import Testimonials from "@/features/testimonials";
-import OurApproach from "@/features/approach/OurApproach";
 import HandshakeAnimation from "@/components/ui/HandshakeAnimation";
 import { Target, Eye, Shield, Globe, Landmark, Building2, ShoppingCart, Hotel, Sprout, PhoneCall, Rocket, ShieldCheck, Cpu, ArrowRight, ChevronDown } from "lucide-react";
 
@@ -14,6 +13,33 @@ const PRINCIPLES = [
   { icon: Eye, title: "Vision", desc: "To become a world leader in vertical IT solutions, setting new benchmarks." },
   { icon: Target, title: "Mission", desc: "To be the first choice for IT solutions for our clients globally." },
   { icon: Globe, title: "Focus", desc: "Providing secure, scalable, and reliable systems that allow businesses to grow." },
+];
+
+const PROCESS_STEPS = [
+  {
+    step: "01",
+    title: "Discussion With Us",
+    description: "We understand your business goals, challenges, and technical expectations before defining direction.",
+    align: "left",
+  },
+  {
+    step: "02",
+    title: "Brief & Analysis",
+    description: "We research competitors, gather references, and prepare a validated execution plan for your approval.",
+    align: "right",
+  },
+  {
+    step: "03",
+    title: "Prototype & Design",
+    description: "We craft UX-focused concepts and convert them into practical design systems ready for development.",
+    align: "left",
+  },
+  {
+    step: "04",
+    title: "Layout & Launch",
+    description: "After approval, we implement, integrate, optimize, and launch with complete QA and post-launch support.",
+    align: "right",
+  },
 ];
 
 const INDUSTRIES = [
@@ -70,6 +96,7 @@ export default function AboutPage() {
     target: industriesRef,
     offset: ["start start", "end end"],
   });
+
 
   const x = useTransform(scrollYProgress, [0, 1], ["0px", scrollRange ? `-${scrollRange}px` : "0px"]);
   const arrowOpacity = useTransform(scrollYProgress, [0, 0.08, 0.18], [1, 0.5, 0]);
@@ -154,6 +181,72 @@ export default function AboutPage() {
             </div>
           ))}
         </motion.div>
+      </section>
+
+      {/* Process Section - alternating flow cards */}
+      <section className="pt-24 pb-16">
+        <div className="container mx-auto px-6">
+          <div className="text-center max-w-3xl mx-auto mb-16">
+            <h2 className="text-4xl md:text-6xl font-black tracking-tighter leading-tight mb-4">
+              Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Process</span>
+            </h2>
+            <p className="text-lg text-gray-400 leading-relaxed font-medium">
+              A structured four-phase workflow from first discussion to successful launch.
+            </p>
+          </div>
+
+          <div className="relative rounded-[2.25rem] border border-white/10 px-6 py-10 md:px-10 md:py-14 overflow-hidden">
+            {/* Flow lines */}
+            <svg
+              className="pointer-events-none absolute inset-0 w-full h-full hidden md:block"
+              viewBox="0 0 1200 1200"
+              preserveAspectRatio="none"
+              aria-hidden="true"
+            >
+              <path d="M110 170 C 360 90, 380 310, 620 250 C 820 200, 900 90, 1080 170" fill="none" stroke="rgba(255,255,255,0.45)" strokeWidth="2" />
+              <path d="M120 540 C 320 430, 450 650, 680 600 C 900 555, 980 440, 1080 530" fill="none" stroke="rgba(255,255,255,0.35)" strokeWidth="2" />
+              <path d="M110 920 C 350 810, 440 1040, 690 980 C 900 930, 980 820, 1080 900" fill="none" stroke="rgba(255,255,255,0.30)" strokeWidth="2" />
+            </svg>
+
+            <div className="space-y-12 md:space-y-14 relative z-10">
+              {PROCESS_STEPS.map((step, idx) => {
+                const isLeft = step.align === "left";
+
+                return (
+                  <motion.article
+                    key={step.step}
+                    initial={{ opacity: 0, y: 24 }}
+                    whileInView={{ opacity: 1, y: 0 }}
+                    viewport={{ once: true, amount: 0.3 }}
+                    transition={{ duration: 0.6, delay: idx * 0.08 }}
+                    className={`grid grid-cols-1 md:grid-cols-2 gap-8 md:gap-12 items-start ${isLeft ? "" : "md:[&>*:first-child]:order-2 md:[&>*:last-child]:order-1"}`}
+                  >
+                    <div className={`relative ${isLeft ? "justify-self-start" : "justify-self-end"}`}>
+                      <div className="w-[260px] md:w-[290px] rounded-[1.5rem] border-2 border-white/60 p-6 pb-10 shadow-xl shadow-black/30">
+                        <p className={`text-[42px] leading-none font-black tracking-tight text-white/90 mb-6 ${isLeft ? "text-left" : "text-right"}`}>{step.step}</p>
+
+                        <div className="inline-flex rounded-2xl bg-brand-primary text-white px-5 py-3 text-lg md:text-[28px] font-black tracking-tight leading-none">
+                          {step.title}
+                        </div>
+                      </div>
+
+                      <div
+                        className={`absolute -bottom-[1px] w-[86px] h-[40px] border-b-2 border-white/60 rounded-b-[22px] ${isLeft ? "left-7 border-l-2" : "right-7 border-r-2"}`}
+                      />
+                    </div>
+
+                    <div className={`pt-3 ${isLeft ? "md:pt-5" : "md:pt-6"}`}>
+                      <div className="h-[2px] w-36 bg-white/70 mb-5" />
+                      <p className="text-gray-200/90 text-sm md:text-[17px] leading-relaxed max-w-md">
+                        {step.description}
+                      </p>
+                    </div>
+                  </motion.article>
+                );
+              })}
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* Industries we serve - Sticky horizontal scroll cards (vertical scroll drives horizontal track) */}
@@ -320,8 +413,6 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* Our Approach Section */}
-      <OurApproach />
 
       {/* Testimonials Section */}
       <div className="pt-24">

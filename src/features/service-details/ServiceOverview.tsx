@@ -1,185 +1,104 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
-import Image from "next/image";
+import { motion } from "framer-motion";
+import { Layers } from "lucide-react";
+import Orb from "@/components/ui/Orb";
 
 interface ServiceOverviewProps {
+  title: string;
   overview: string;
   summary: string;
 }
 
-export default function ServiceOverview({ overview, summary }: ServiceOverviewProps) {
-  const sectionRef = useRef<HTMLElement>(null);
-  const { scrollYProgress } = useScroll({
-    target: sectionRef,
-    offset: ["start end", "end start"],
-  });
+export default function ServiceOverview({ title, overview, summary }: ServiceOverviewProps) {
+  // Truncate summary to ~15 words for a cleaner, concise message
+  const shortDescription = summary.split(" ").slice(0, 15).join(" ") + "...";
 
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "20%"]);
-  const textY = useTransform(scrollYProgress, [0, 1], ["0%", "-10%"]);
-  const scale = useTransform(scrollYProgress, [0, 0.5], [0.95, 1]);
-  const opacity = useTransform(scrollYProgress, [0, 0.3], [0, 1]);
+  // Dynamic Title Mapping based on service title
+  const getDynamicTitle = (t: string) => {
+    const lower = t.toLowerCase();
+    if (lower.includes("web development")) return "Digital Engines";
+    if (lower.includes("software development")) return "Agile Craft";
+    if (lower.includes("managed services")) return "Infinite Care";
+    if (lower.includes("network")) return "Neural Link";
+    if (lower.includes("storage")) return "Data Vaults";
+    if (lower.includes("server")) return "Server Core";
+    if (lower.includes("backup") || lower.includes("disaster")) return "Safe Guard";
+    if (lower.includes("application")) return "App Pulse";
+    return "Future Tech";
+  };
 
+  const dynamicTitle = getDynamicTitle(title);
+  
   return (
-    <section ref={sectionRef} className="pb-24 relative overflow-hidden">
-      <motion.div
-        style={{ scale, opacity }}
-        className="relative rounded-[3rem] overflow-hidden border border-white/10"
-      >
-        {/* Background image with parallax */}
-        <motion.div 
-          style={{ y: bgY }}
-          className="absolute inset-0 -top-[10%] -bottom-[10%]"
-        >
-          <Image
-            src="/images/service-overview-bg.png"
-            alt=""
-            fill
-            className="object-cover"
-            priority
-          />
-          {/* Dark overlay for readability */}
-          <div className="absolute inset-0 bg-gradient-to-b from-[#020a1a]/70 via-[#020a1a]/60 to-[#020a1a]/80" />
-        </motion.div>
-
-        {/* Animated mesh lines */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          {/* Horizontal glowing lines */}
-          <motion.div
-            animate={{ x: ["-100%", "100%"] }}
-            transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[30%] left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/30 to-transparent"
-          />
-          <motion.div
-            animate={{ x: ["100%", "-100%"] }}
-            transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-            className="absolute top-[70%] left-0 w-full h-px bg-gradient-to-r from-transparent via-brand-primary/20 to-transparent"
-          />
-          
-          {/* Vertical glowing lines */}
-          <motion.div
-            animate={{ y: ["-100%", "100%"] }}
-            transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
-            className="absolute left-[25%] top-0 w-px h-full bg-gradient-to-b from-transparent via-cyan-400/20 to-transparent"
-          />
-          <motion.div
-            animate={{ y: ["100%", "-100%"] }}
-            transition={{ duration: 9, repeat: Infinity, ease: "linear" }}
-            className="absolute right-[25%] top-0 w-px h-full bg-gradient-to-b from-transparent via-brand-primary/15 to-transparent"
-          />
-        </div>
-
-        {/* Floating particles */}
-        <div className="absolute inset-0 pointer-events-none">
-          {[...Array(6)].map((_, i) => (
-            <motion.div
-              key={i}
-              animate={{
-                y: [0, -30, 0],
-                opacity: [0.2, 0.6, 0.2],
-                scale: [1, 1.3, 1],
-              }}
-              transition={{
-                duration: 4 + i * 0.8,
-                repeat: Infinity,
-                delay: i * 0.7,
-                ease: "easeInOut",
-              }}
-              className="absolute w-1.5 h-1.5 rounded-full bg-cyan-400/50"
-              style={{
-                left: `${15 + i * 14}%`,
-                top: `${20 + (i % 3) * 25}%`,
-              }}
+    <section className="pb-24 relative">
+      <div className="relative overflow-hidden bg-[#020a1a] border border-white/5 rounded-[4rem] min-h-[800px] flex items-center justify-center">
+        
+        {/* Full Space Orb Background - Scaled to act as a container */}
+        <div className="absolute inset-0 z-0 flex items-center justify-center">
+          <div className="w-full h-full max-w-[600px] max-h-[600px]">
+            <Orb
+              hoverIntensity={1.2}
+              rotateOnHover
+              hue={0}
+              forceHoverState={false}
+              backgroundColor="#020a1a"
+              className="scale-125 md:scale-110"
             />
-          ))}
-        </div>
-
-        {/* Corner accents */}
-        <div className="absolute top-0 left-0 w-24 h-24">
-          <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-cyan-500/50 to-transparent" />
-          <div className="absolute top-0 left-0 h-full w-px bg-gradient-to-b from-cyan-500/50 to-transparent" />
-        </div>
-        <div className="absolute bottom-0 right-0 w-24 h-24">
-          <div className="absolute bottom-0 right-0 w-full h-px bg-gradient-to-l from-brand-primary/50 to-transparent" />
-          <div className="absolute bottom-0 right-0 h-full w-px bg-gradient-to-t from-brand-primary/50 to-transparent" />
-        </div>
-
-        {/* Content */}
-        <motion.div 
-          style={{ y: textY }}
-          className="relative z-10 p-12 md:p-20"
-        >
-          <div className="max-w-4xl mx-auto text-center">
-            {/* Animated badge */}
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-500/20 bg-cyan-500/5 mb-10"
-            >
-              <motion.div
-                animate={{ scale: [1, 1.4, 1] }}
-                transition={{ duration: 2, repeat: Infinity }}
-                className="w-2 h-2 rounded-full bg-cyan-400"
-              />
-              <span className="text-xs font-bold tracking-[0.2em] uppercase text-cyan-400/80">Service Overview</span>
-            </motion.div>
-
-            {/* Title with staggered word animation */}
-            <motion.h2
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.1 }}
-              className="text-4xl md:text-6xl font-black tracking-tighter mb-8"
-            >
-              Empowering your business with{" "}
-              <motion.span
-                initial={{ opacity: 0, y: 20 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.8, delay: 0.3 }}
-                className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary inline-block"
-              >
-                Precision & Scale
-              </motion.span>
-            </motion.h2>
-
-            {/* Overview text */}
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.6, delay: 0.4 }}
-              className="text-xl md:text-2xl text-gray-300 leading-relaxed mb-10 font-medium"
-            >
-              {overview}
-            </motion.p>
-
-            {/* Animated divider */}
-            <motion.div
-              initial={{ opacity: 0, width: 0 }}
-              whileInView={{ opacity: 1, width: "120px" }}
-              viewport={{ once: true }}
-              transition={{ duration: 1, delay: 0.6, ease: [0.32, 0.72, 0, 1] }}
-              className="h-[2px] mx-auto mb-10 bg-gradient-to-r from-brand-primary via-cyan-400 to-brand-secondary"
-            />
-
-            {/* Summary quote */}
-            <motion.p
-              initial={{ opacity: 0 }}
-              whileInView={{ opacity: 1 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="text-lg text-gray-400 leading-relaxed italic"
-            >
-              &ldquo;{summary}&rdquo;
-            </motion.p>
           </div>
-        </motion.div>
-      </motion.div>
+        </div>
+
+        {/* Atmospheric Glow Overlay */}
+        <div className="absolute inset-0 pointer-events-none z-[1]">
+          <div className="absolute top-0 left-0 w-full h-full bg-radial-gradient(circle at center, transparent 20%, #020a1a 100%) opacity-60" />
+        </div>
+
+        {/* Centered Content - PLACED INSIDE THE CIRCLE */}
+        <div className="relative z-10 text-center px-8 max-w-sm mx-auto flex flex-col items-center justify-center aspect-square rounded-full pointer-events-none">
+          
+          {/* Subtle Badge */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            className="inline-flex items-center px-4 py-1.5 rounded-full border border-white/5 glass-effect mb-6 backdrop-blur-sm"
+          >
+            <div className="w-1.5 h-1.5 rounded-full bg-brand-secondary mr-2 animate-pulse shadow-[0_0_8px_rgba(var(--brand-secondary-rgb),0.5)]" />
+            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40">
+              Visionary
+            </span>
+          </motion.div>
+
+          {/* 2-3 Word Big Title - Dynamic Based on Service */}
+          <motion.h2
+            initial={{ opacity: 0, scale: 0.95 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 1, ease: "easeOut" }}
+            className="text-3xl md:text-5xl lg:text-5xl font-black leading-[1] tracking-tighter mb-6 text-white uppercase drop-shadow-[0_0_20px_rgba(255,255,255,0.2)]"
+          >
+            {dynamicTitle}
+          </motion.h2>
+
+          {/* Visionary Description - Centered Inside Orb */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+            className="max-w-xs mx-auto"
+          >
+            <p className="text-[10px] md:text-xs text-gray-400 font-bold leading-relaxed uppercase tracking-[0.2em] opacity-80">
+              {shortDescription}
+            </p>
+          </motion.div>
+        </div>
+
+        {/* Minimal Corner Accents */}
+        <div className="absolute top-12 left-12 w-12 h-12 border-t-2 border-l-2 border-white/10 pointer-events-none" />
+        <div className="absolute bottom-12 right-12 w-12 h-12 border-b-2 border-r-2 border-white/10 pointer-events-none" />
+        
+      </div>
     </section>
   );
 }

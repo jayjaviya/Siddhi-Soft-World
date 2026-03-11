@@ -12,6 +12,7 @@ import Link from "next/link";
 import WorkflowCycle from "@/features/workflow/WorkflowCycle";
 import FAQ from "@/features/faq";
 
+
 const REVEAL_ITEMS = [
   {
     title: "Agile Development",
@@ -44,6 +45,7 @@ export default function Home() {
       <HomeAbout />
       <StatsCounter />
       <StickyReveal items={REVEAL_ITEMS} />
+      
 
       <ServicesSection />
 
@@ -53,7 +55,7 @@ export default function Home() {
       <FAQ /> */}
 
       {/* CTA Section */}
-      <section className="pt-32 pb-16 container mx-auto px-6">
+      <section className="pt-32 pb-0 container mx-auto px-6">
         <div className="bg-gradient-blue-royal rounded-t-[4rem] p-16 md:p-20 relative overflow-hidden group border border-white/10">
           <div className="relative z-10 flex flex-col lg:flex-row items-center gap-16 text-white">
             {/* Left: Text Content */}

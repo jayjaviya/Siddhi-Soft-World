@@ -36,16 +36,16 @@ export default function ServiceSidebar() {
                 href={href}
                 className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
                   isActive
-                    ? "bg-brand-primary/15 text-brand-primary border border-brand-primary/20"
+                    ? "bg-transparent text-white border border-brand-primary"
                     : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
                 }`}
               >
                 <service.icon className={`w-4 h-4 shrink-0 transition-colors duration-300 ${
-                  isActive ? "text-brand-primary" : "text-gray-600 group-hover:text-brand-secondary"
+                  isActive ? "text-white" : "text-gray-600 group-hover:text-brand-secondary"
                 }`} />
                 <span className="truncate">{service.title}</span>
                 {isActive && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-brand-primary shrink-0" />
+                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white shrink-0" />
                 )}
               </Link>
             );

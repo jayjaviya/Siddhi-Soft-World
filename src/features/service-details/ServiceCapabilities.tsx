@@ -1,7 +1,8 @@
 "use client";
 
-import { motion } from "framer-motion";
-import { CheckCircle2, Shield, Zap, Globe, Cpu, Cog } from "lucide-react";
+import { useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 interface Capability {
   title: string;
@@ -12,9 +13,24 @@ interface ServiceCapabilitiesProps {
   capabilities: Capability[];
 }
 
-const ICONS = [Zap, Shield, Cpu, Globe, Cog, CheckCircle2];
+const ACTIVE_BACKGROUNDS = [
+  "from-[#ee7128]/72 via-orange-200/65 to-orange-50",
+  "from-cyan-200/80 via-sky-100/60 to-white",
+  "from-blue-200/80 via-indigo-100/60 to-white",
+  "from-emerald-200/80 via-teal-100/60 to-white",
+  "from-orange-200/80 via-amber-100/60 to-white",
+  "from-violet-200/80 via-fuchsia-100/60 to-white",
+];
 
 export default function ServiceCapabilities({ capabilities }: ServiceCapabilitiesProps) {
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  if (!capabilities || capabilities.length === 0) {
+    return null;
+  }
+
+  const visibleIndexes = [activeIndex - 1, activeIndex, activeIndex + 1];
+
   return (
     <section className="py-24 bg-bg-deep/50 relative">
       <div className="relative z-10">
@@ -32,47 +48,122 @@ export default function ServiceCapabilities({ capabilities }: ServiceCapabilitie
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {capabilities.map((item, idx) => {
-            const Icon = ICONS[idx % ICONS.length];
-            return (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                transition={{ duration: 0.5, delay: idx * 0.1 }}
-                className="group relative h-full"
-              >
-                <div className="absolute inset-0 bg-gradient-to-br from-brand-primary/20 via-transparent to-brand-secondary/20 rounded-[2.5rem] blur-2xl opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                
-                <div className="relative h-full glass-effect p-10 rounded-[2.5rem] border border-white/5 group-hover:border-white/20 transition-all duration-500 flex flex-col justify-between overflow-hidden">
-                  {/* Decorative number */}
-                  <div className="absolute -top-4 -right-4 text-8xl font-black text-white/[0.03] italic group-hover:text-white/[0.07] transition-colors duration-500">
-                    {idx + 1}
-                  </div>
+        <div className="overflow-hidden pb-2">
+          <div className="flex items-stretch justify-center gap-4 md:gap-5">
+            {visibleIndexes.map((idx, position) => {
+              if (idx < 0 || idx >= capabilities.length) {
+                return (
+                  <div
+                    key={`empty-${position}`}
+                    className="w-[180px] md:w-[240px] shrink-0"
+                    aria-hidden="true"
+                  />
+                );
+              }
 
-                  <div>
-                    <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 group-hover:rotate-6 transition-all duration-500">
-                      <Icon className="w-7 h-7 text-brand-secondary group-hover:text-brand-primary transition-colors" />
+              const item = capabilities[idx];
+              const isActive = idx === activeIndex;
+              const number = String(idx + 1).padStart(2, "0");
+              const isSideCard = position !== 1;
+              const isLeftCard = position === 0;
+              const handleSelect = () => {
+                if (isSideCard) {
+                  setActiveIndex(idx);
+                }
+              };
+
+              return (
+                <motion.div
+                  key={idx}
+                  onClick={handleSelect}
+                  onKeyDown={(event) => {
+                    if (!isSideCard) return;
+                    if (event.key === "Enter" || event.key === " ") {
+                      event.preventDefault();
+                      setActiveIndex(idx);
+                    }
+                  }}
+                  role={isSideCard ? "button" : undefined}
+                  tabIndex={isSideCard ? 0 : -1}
+                  aria-label={isSideCard ? `Open capability: ${item.title}` : undefined}
+                  layout
+                  transition={{
+                    duration: 0.65,
+                    layout: { type: "spring", stiffness: 110, damping: 24, mass: 0.9 },
+                  }}
+                  className={`relative shrink-0 rounded-[2rem] border border-white/10 bg-white/[0.03] overflow-hidden ${
+                    isActive ? "w-[420px] md:w-[520px] cursor-default" : "w-[180px] md:w-[240px] cursor-pointer"
+                  }`}
+                >
+                  <motion.div
+                    initial={false}
+                    animate={{
+                      scaleX: isActive ? 1 : 0,
+                      opacity: isActive ? 1 : 0,
+                    }}
+                    transition={{ duration: 0.72, ease: [0.22, 1, 0.36, 1] }}
+                    style={{ transformOrigin: "left center" }}
+                    className={`absolute inset-0 bg-gradient-to-b ${ACTIVE_BACKGROUNDS[idx % ACTIVE_BACKGROUNDS.length]}`}
+                  />
+
+                  <motion.div layout className="relative p-7 md:p-8 min-h-[260px] md:min-h-[360px] flex flex-col">
+                    <motion.div layout className={`text-5xl md:text-6xl font-black tracking-tight ${isActive ? "text-white/65" : "text-white/15"}`}>
+                      {number}
+                    </motion.div>
+
+                    <div className="flex-1 flex items-center">
+                      <motion.div layout className="w-full">
+                        <motion.h3
+                          layout
+                          transition={{ type: "spring", stiffness: 140, damping: 20 }}
+                          style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}
+                          className={`font-black leading-[0.95] [text-wrap:balance] ${isActive ? "text-[2.65rem] text-black mt-2 mb-3 tracking-[-0.03em]" : "text-[2rem] text-white/90 mb-0 tracking-[-0.02em]"}`}
+                        >
+                          {item.title}
+                        </motion.h3>
+
+                        <AnimatePresence initial={false} mode="wait">
+                          {isActive && (
+                            <motion.p
+                              key={`capability-desc-${idx}`}
+                              initial={{ opacity: 0, y: 18 }}
+                              animate={{ opacity: 1, y: 0 }}
+                              exit={{ opacity: 0, y: 10 }}
+                              transition={{ duration: 0.5, delay: 0.12, ease: [0.22, 1, 0.36, 1] }}
+                              className="text-black/65 leading-relaxed max-w-md text-sm md:text-base"
+                            >
+                              {item.desc || "Enterprise-grade solution tailored for high-performance requirements and scalable infrastructure."}
+                            </motion.p>
+                          )}
+                        </AnimatePresence>
+                      </motion.div>
                     </div>
-                    
-                    <h3 className="text-2xl font-black mb-4 group-hover:text-white transition-colors">
-                      {item.title}
-                    </h3>
-                    
-                    <p className="text-gray-400 group-hover:text-gray-300 leading-relaxed transition-colors">
-                      {item.desc || "Enterprise-grade solution tailored for high-performance requirements and scalable infrastructure."}
-                    </p>
-                  </div>
 
-                  <div className="mt-8 pt-8 border-t border-white/5 flex items-center text-sm font-bold tracking-widest uppercase text-brand-secondary opacity-0 group-hover:opacity-100 group-hover:translate-x-0 -translate-x-4 transition-all duration-500">
-                    Precision Engineered
-                  </div>
-                </div>
-              </motion.div>
-            );
-          })}
+                    {isSideCard && (
+                      <motion.div
+                        initial={{ opacity: 0, y: 6 }}
+                        animate={{ opacity: 1, y: 0 }}
+                        transition={{ duration: 0.35 }}
+                        className="mt-2 flex items-center gap-1 text-[10px] uppercase tracking-[0.18em] text-white/55"
+                      >
+                        {isLeftCard ? (
+                          <>
+                            <ChevronLeft className="w-3.5 h-3.5" />
+                            <span>Click To Open</span>
+                          </>
+                        ) : (
+                          <>
+                            <span>Click To Open</span>
+                            <ChevronRight className="w-3.5 h-3.5" />
+                          </>
+                        )}
+                      </motion.div>
+                    )}
+                  </motion.div>
+                </motion.div>
+              );
+            })}
+          </div>
         </div>
       </div>
     </section>

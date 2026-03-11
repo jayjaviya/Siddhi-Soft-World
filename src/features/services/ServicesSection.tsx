@@ -1,6 +1,7 @@
 "use client";
 
-import { useRef, createRef, useMemo } from "react";
+import { useRef, createRef, useMemo, useEffect } from "react";
+import { useLenis } from "@studio-freight/react-lenis";
 import {
   motion,
   useScroll,
@@ -168,8 +169,43 @@ export default function ServicesSection() {
     []
   );
 
+  const sectionRef = useRef<HTMLElement>(null);
+  
+  // Dynamically adjust scroll speed when exploring this section
+  const lenisInstance = useLenis((lenis) => {
+    if (!sectionRef.current || !lenis) return;
+    
+    const rect = sectionRef.current.getBoundingClientRect();
+    const windowHeight = window.innerHeight;
+    const viewportCenter = windowHeight / 2;
+    
+    // Check if the center of the viewport is within the section boundaries
+    const isCenterInSection = rect.top <= viewportCenter && rect.bottom >= viewportCenter;
+    
+    // Slower scroll (0.4x) when inside the section, normal (1x) when outside
+    const targetMultiplier = isCenterInSection ? 0.4 : 1;
+    const currentMultiplier = (lenis as any).options.wheelMultiplier ?? 1;
+    
+    // Smoothly lerp towards target to avoid jarring speed changes
+    const newMultiplier = currentMultiplier + (targetMultiplier - currentMultiplier) * 0.1;
+    
+    // Apply new multiplier if different enough
+    if (Math.abs(newMultiplier - currentMultiplier) > 0.001) {
+      (lenis as any).options.wheelMultiplier = newMultiplier;
+    }
+  });
+
+  // Ensure scroll speed is reset if component unmounts while in slow mode
+  useEffect(() => {
+    return () => {
+      if (lenisInstance) {
+        (lenisInstance as any).options.wheelMultiplier = 1;
+      }
+    };
+  }, [lenisInstance]);
+
   return (
-    <section className="relative" style={{ background: "#020a1a" }}>
+    <section ref={sectionRef} className="relative" style={{ background: "#020a1a" }}>
       {/* ─── Section Header — scrolls away naturally ─── */}
       <div className="pt-32 pb-16">
         <div className="max-w-[1440px] mx-auto px-6 lg:px-12">
