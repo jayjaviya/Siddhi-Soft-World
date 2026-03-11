@@ -57,6 +57,18 @@ export default function Home() {
       {/* CTA Section */}
       <section className="pt-32 pb-0 container mx-auto px-6">
         <div className="bg-gradient-blue-royal rounded-t-[4rem] p-16 md:p-20 relative overflow-hidden group border border-white/10">
+          {/* Background Video (Replace src with your actual video path) */}
+          <video
+            src="/videos/cta-bg.mp4"
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="absolute inset-0 w-full h-full object-cover opacity-30 mix-blend-screen pointer-events-none transition-opacity duration-1000 group-hover:opacity-40"
+          />
+          {/* Dark Overlay for Text Readability */}
+          <div className="absolute inset-0 bg-[#020a1a]/40 pointer-events-none" />
+          
           <div className="relative z-10 flex flex-col lg:flex-row items-center gap-16 text-white">
             {/* Left: Text Content */}
             <div className="flex-1 text-center lg:text-left">
