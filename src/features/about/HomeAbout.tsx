@@ -1,11 +1,25 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Target, Users, Sparkles } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
+import { useEffect, useState } from "react";
 
 export default function HomeAbout() {
+  const prefersReducedMotion = useReducedMotion();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const enableOrbit = isDesktop && !prefersReducedMotion;
+
   return (
     <section className="py-24 relative overflow-hidden bg-bg-deep">
       <div className="container mx-auto px-6 relative z-10">
@@ -25,7 +39,7 @@ export default function HomeAbout() {
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Digital Evolution</span>
             </h2>
 
-            <p className="text-lg md:text-xl text-gray-400 leading-relaxed mb-10 max-w-xl">
+            <p className="text-lg md:text-xl text-gray-400 leading-relaxed mb-10 max-w-lg">
               Siddhi Soft World is a premium technology partner dedicated to building high-performance systems that empower global enterprises. We bridge the gap between complex challenges and elegant, scalable solutions.
             </p>
 
@@ -111,16 +125,20 @@ export default function HomeAbout() {
             </motion.div>
 
             {/* Glow ring around earth */}
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-              className="absolute bottom-[-60px] w-[400px] h-[400px] rounded-full border border-cyan-500/10 z-0"
-            />
-            <motion.div
-              animate={{ rotate: -360 }}
-              transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-              className="absolute bottom-[-40px] w-[360px] h-[360px] rounded-full border border-brand-primary/10 z-0"
-            />
+            {enableOrbit && (
+              <>
+                <motion.div
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 24, repeat: Infinity, ease: "linear" }}
+                  className="absolute bottom-[-60px] w-[400px] h-[400px] rounded-full border border-cyan-500/10 z-0"
+                />
+                <motion.div
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 34, repeat: Infinity, ease: "linear" }}
+                  className="absolute bottom-[-40px] w-[360px] h-[360px] rounded-full border border-brand-primary/10 z-0"
+                />
+              </>
+            )}
 
             {/* Half Earth Image */}
             <div className="relative w-full overflow-hidden rounded-t-full" style={{ height: '380px' }}>

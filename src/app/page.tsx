@@ -11,6 +11,7 @@ import { Cpu, Shield, Code, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import WorkflowCycle from "@/features/workflow/WorkflowCycle";
 import FAQ from "@/features/faq";
+import EnvironmentSection from "@/features/careers/EnvironmentSection";
 
 
 const REVEAL_ITEMS = [
@@ -20,6 +21,11 @@ const REVEAL_ITEMS = [
     icon: Code,
     image: "/images/home/features/Agile-Development.jpg",
     color: "from-brand-primary via-white to-brand-secondary",
+    features: [
+      "Continuous Integration & Testing",
+      "Regular Sprint Reviews & Demos",
+      "Direct Client Collaboration Cycles"
+    ]
   },
   {
     title: "Server Excellence",
@@ -27,6 +33,11 @@ const REVEAL_ITEMS = [
     icon: Cpu,
     image: "/images/home/features/Server-Excellence.jpg",
     color: "from-brand-secondary via-white to-brand-primary",
+    features: [
+      "24/7 Monitoring & High Availability",
+      "Enterprise Security Hardening",
+      "Scalable Cloud & Hybrid Setups"
+    ]
   },
   {
     title: "Disaster Recovery",
@@ -34,13 +45,68 @@ const REVEAL_ITEMS = [
     icon: Shield,
     image: "/images/home/features/Disaster-Recovery.jpg",
     color: "from-brand-primary via-white to-brand-secondary",
+    features: [
+      "Automated Offsite Backup Systems",
+      "Proactive Threat & Vulnerability Audits",
+      "Bare Metal Fast Restore Protocols"
+    ]
+  },
+];
+
+const HOME_FACILITIES = [
+  {
+    title: "Enterprise Architecture",
+    desc: "Built for scaling. Industrial-grade setups, redundant systems, and robust recovery to empower global operations.",
+    image: "/images/home/features/enterprise_architecture_office.png"
+  },
+  {
+    title: "Secure Data Centers",
+    desc: "Uninterrupted flow with low latency. Safe isolation chambers engineered for high throughput loads.",
+    image: "/images/home/features/secure_datacenter.png"
+  },
+  {
+    title: "Collaboration Hubs",
+    desc: "Spontaneous brainstorm zones connecting engineering talents for continuous deployment cycles seamlessly.",
+    image: "/images/home/features/collaboration_hubs.png"
+  },
+  {
+    title: "Redundant Backups",
+    desc: "Ironclad security keeping business data reliable with 24/7 dedicated monitoring panels securely.",
+    image: "/images/home/features/redundant_backups_office.png"
   },
 ];
 
 export default function Home() {
   return (
-    <main className="relative">
+    <div className="relative bg-bg-deep rounded-t-[4rem] overflow-x-clip">
       <Hero />
+      <EnvironmentSection 
+        className="pt-0 pb-24" 
+        items={HOME_FACILITIES}
+        description="We engineer resilient structures and robust failsafe environments powering elite scaling for global businesses."
+        title={
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 md:whitespace-nowrap">
+            <motion.span
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.1 }}
+              className="text-white"
+            >
+              Infrastructure &
+            </motion.span>{" "}
+            <motion.span
+              initial={{ opacity: 0, scale: 0.8 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.8, delay: 0.3 }}
+              className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary"
+            >
+              Performance
+            </motion.span>
+          </h2>
+        }
+      />
       <TechLogos />
       <HomeAbout />
       <StatsCounter />
@@ -181,6 +247,6 @@ export default function Home() {
           </div>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

@@ -14,22 +14,22 @@ const DEFAULT_STEPS: Step[] = [
   { 
     title: "Discovery", 
     desc: "We begin by understanding your unique business challenges and technical requirements before defining direction.", 
-    image: "/images/approach/discovery.png" 
+    image: "/images/approach/real_discovery.png" 
   },
   { 
     title: "Strategy", 
     desc: "Developing a customized roadmap and architecture tailored for your specific goals, ensuring a validated execution plan.", 
-    image: "/images/approach/strategy.png" 
+    image: "/images/approach/real_strategy.png" 
   },
   { 
     title: "Execution", 
     desc: "Agile development and precise implementation with continuous quality assurance to convert concepts into practical systems.", 
-    image: "/images/approach/execution.png" 
+    image: "/images/approach/real_execution.png" 
   },
   { 
     title: "Optimization", 
     desc: "Performance tuning, scaling, and integration to ensure your system operates at peak efficiency with post-launch support.", 
-    image: "/images/approach/optimization.png" 
+    image: "/images/approach/real_optimization.png" 
   }
 ];
 
@@ -64,10 +64,9 @@ export default function ServiceProcess() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
             transition={{ delay: 0.1 }}
-            className="text-gray-400 text-lg md:text-xl max-w-2xl mx-auto mt-6 leading-relaxed"
+            className="text-gray-400 text-lg md:text-xl max-w-sm mx-auto mt-6 leading-relaxed"
           >
-            A systematic, results-driven methodology designed to transform complex challenges into 
-            seamless digital solutions with precision and excellence.
+            A results-driven methodology transforming complex challenges into seamless solutions.
           </motion.p>
         </div>
 

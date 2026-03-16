@@ -1,26 +1,38 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
+import { motion, useScroll, useTransform, useReducedMotion } from "framer-motion";
 import { ChevronRight, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import Image from "next/image";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 export default function AboutHero() {
   const targetRef = useRef<HTMLDivElement>(null);
+  const prefersReducedMotion = useReducedMotion();
+  const [isDesktop, setIsDesktop] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const enableParallax = isDesktop && !prefersReducedMotion;
   const { scrollYProgress } = useScroll({
     target: targetRef,
     offset: ["start start", "end start"],
   });
 
-  const scale = useTransform(scrollYProgress, [0, 1], [1, 1.2]);
+  const scale = useTransform(scrollYProgress, [0, 1], [1, enableParallax ? 1.08 : 1]);
   const opacity = useTransform(scrollYProgress, [0, 0.5], [1, 0]);
-  const y = useTransform(scrollYProgress, [0, 1], [0, 200]);
+  const y = useTransform(scrollYProgress, [0, 1], [0, enableParallax ? 120 : 0]);
   const borderRadius = useTransform(scrollYProgress, [0, 0.5], ["4rem", "0rem"]);
 
   // Background Image Animation
-  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", "15%"]);
-  const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.3]);
+  const bgY = useTransform(scrollYProgress, [0, 1], ["0%", enableParallax ? "8%" : "0%"]);
+  const bgScale = useTransform(scrollYProgress, [0, 1], [1.02, enableParallax ? 1.1 : 1.02]);
 
   return (
     <section ref={targetRef} className="relative -top-[30px] min-h-[100vh] pt-10 overflow-hidden">
@@ -34,7 +46,7 @@ export default function AboutHero() {
           <div className="absolute inset-0 z-0 overflow-hidden select-none pointer-events-none">
             <motion.div
               style={{ y: bgY, scale: bgScale }}
-              className="absolute inset-0 z-0 will-change-transform"
+              className="absolute inset-0 z-0"
             >
               <Image
                 src="/images/about/about-hero-bg.webp"
@@ -47,7 +59,7 @@ export default function AboutHero() {
             </motion.div>
 
             {/* Strong Dark Overlay to make the colorful title pop */}
-            <div className="absolute inset-0 bg-black/40 z-10 backdrop-blur-[2px]" />
+            <div className="absolute inset-0 bg-black/40 z-10" />
             <div className="absolute inset-0 bg-gradient-to-b from-bg-deep/60 via-transparent to-bg-deep/90 z-10" />
           </div>
 
@@ -79,7 +91,7 @@ export default function AboutHero() {
                           animate: { opacity: 1, y: 0 },
                         }}
                         transition={{ duration: 0.4, ease: "easeOut" }}
-                        className="will-change-[opacity,transform] inline-block"
+                        className="inline-block"
                       >
                         {char}
                       </motion.span>
@@ -97,7 +109,7 @@ export default function AboutHero() {
                         animate: { opacity: 1, y: 0 },
                       }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary will-change-[opacity,transform] inline-block pb-2"
+                      className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-primary inline-block pb-2"
                     >
                       {char}
                     </motion.span>
@@ -112,7 +124,7 @@ export default function AboutHero() {
                         animate: { opacity: 1, y: 0 },
                       }}
                       transition={{ duration: 0.4, ease: "easeOut" }}
-                      className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary will-change-[opacity,transform] inline-block pb-2"
+                      className="bg-clip-text text-transparent bg-gradient-to-b from-white to-brand-secondary inline-block pb-2"
                     >
                       {char}
                     </motion.span>

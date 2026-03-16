@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import ContactHero from "@/features/contact/ContactHero";
 import { motion } from "framer-motion";
-import { Phone, Mail, MapPin, Send, MessageSquare, Linkedin, Twitter, Github } from "lucide-react";
+import { Phone, Mail, MapPin, Send, MessageSquare, Linkedin, Facebook, Instagram, User, Briefcase, ChevronDown } from "lucide-react";
+import XIcon from "@/components/ui/XIcon";
 
 const OFFICES = [
   {
@@ -23,94 +25,243 @@ const OFFICES = [
 ];
 
 export default function ContactPage() {
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    email: "",
+    subject: "Software Development",
+    message: ""
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showSuccess, setShowSuccess] = useState(false);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({ ...prev, [name]: value }));
+    if (errors[name]) {
+      setErrors(prev => {
+        const newErrors = { ...prev };
+        delete newErrors[name];
+        return newErrors;
+      });
+    }
+  };
+
+  const validateForm = () => {
+    const newErrors: Record<string, string> = {};
+    if (!formData.firstName.trim()) newErrors.firstName = "Required";
+    if (!formData.lastName.trim()) newErrors.lastName = "Required";
+    if (!formData.email.trim()) {
+      newErrors.email = "Required";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      newErrors.email = "Invalid email";
+    }
+    if (!formData.message.trim()) {
+      newErrors.message = "Message is required";
+    } else if (formData.message.trim().length < 10) {
+      newErrors.message = "Message is too short";
+    }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!validateForm()) return;
+
+    setIsSubmitting(true);
+    setShowSuccess(false);
+
+    setTimeout(() => {
+      setIsSubmitting(false);
+      setShowSuccess(true);
+      setFormData({
+        firstName: "",
+        lastName: "",
+        email: "",
+        subject: "Software Development",
+        message: ""
+      });
+      setTimeout(() => setShowSuccess(false), 5000);
+    }, 2000);
+  };
+
   return (
     <div className="pb-32 bg-bg-deep rounded-t-[4rem]">
       <ContactHero />
 
       <section className="pt-48 pb-24 container mx-auto px-6">
-        <div className="max-w-4xl mx-auto flex flex-col items-center">
-          {/* Contact Info - Centered */}
-          <div className="text-center mb-20 space-y-8">
+        <div className="max-w-3xl mx-auto">
+          {/* Header */}
+          <div className="text-center mb-16 space-y-6">
             <motion.h2
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              className="text-5xl md:text-7xl font-bold mb-6"
+              className="text-4xl md:text-6xl font-black text-white"
             >
               Let&apos;s Build Something <br />
               <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Extraordinary</span>
             </motion.h2>
-            <p className="text-gray-400 text-xl leading-relaxed max-w-2xl mx-auto">
-              Whether you have a specific project in mind or just want to explore how we can help your business grow, we&apos;re here to listen and provide expert guidance.
+            <p className="text-gray-400 text-lg leading-relaxed max-w-xl mx-auto">
+              Get in touch with our experts and let&apos;s turn your ideas into digital reality.
             </p>
-
           </div>
 
-          {/* Contact Form - Horizontal / Full-width */}
+          {/* Form Card */}
           <motion.div
             initial={{ opacity: 0, y: 30 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="w-full glass-effect p-12 md:p-16 rounded-[3.5rem] border border-brand-primary/20 relative"
+            className="relative z-10"
           >
-            <div className="space-y-10 relative z-10">
-              <div className="flex items-center justify-center space-x-3 mb-10">
-                <div className="w-12 h-12 bg-brand-primary/20 rounded-xl flex items-center justify-center">
-                  <MessageSquare className="w-6 h-6 text-brand-primary" />
-                </div>
-                <h3 className="text-3xl font-bold">Send us a Message</h3>
-              </div>
-
-              {/* Form Grid */}
+            <form onSubmit={handleSubmit} className="bg-white/[0.02] p-8 md:p-12 rounded-[2.5rem] border border-white/5 shadow-2xl backdrop-blur-sm">
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="space-y-3">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">First Name</label>
-                  <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:outline-none focus:border-brand-primary transition-colors text-white" placeholder="John" />
-                </div>
-                <div className="space-y-3">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Last Name</label>
-                  <input type="text" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:outline-none focus:border-brand-primary transition-colors text-white" placeholder="Doe" />
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 px-1">
+                    <User className="w-3 h-3 text-white" /> First Name
+                  </label>
+                  <input 
+                    type="text" 
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    placeholder="John" 
+                    className={`w-full bg-white/5 border ${errors.firstName ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-4 text-white focus:outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-sm`}
+                  />
+                  {errors.firstName && <p className="text-[10px] text-red-500 font-bold px-1">{errors.firstName}</p>}
                 </div>
 
                 <div className="space-y-3">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Email Address</label>
-                  <input type="email" className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:outline-none focus:border-brand-primary transition-colors text-white" placeholder="john@example.com" />
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 px-1">
+                    <User className="w-3 h-3 text-white" /> Last Name
+                  </label>
+                  <input 
+                    type="text" 
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    placeholder="Doe" 
+                    className={`w-full bg-white/5 border ${errors.lastName ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-4 text-white focus:outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-sm`}
+                  />
+                  {errors.lastName && <p className="text-[10px] text-red-500 font-bold px-1">{errors.lastName}</p>}
                 </div>
+
                 <div className="space-y-3">
-                  <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Subject</label>
-                  <select className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:outline-none focus:border-brand-primary transition-colors text-white appearance-none">
-                    <option className="bg-bg-deep">Software Development</option>
-                    <option className="bg-bg-deep">Server Management</option>
-                    <option className="bg-bg-deep">Web Development</option>
-                    <option className="bg-bg-deep">Other Inquiry</option>
-                  </select>
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 px-1">
+                    <Mail className="w-3 h-3 text-white" /> Email Address
+                  </label>
+                  <input 
+                    type="email" 
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    placeholder="john@example.com" 
+                    className={`w-full bg-white/5 border ${errors.email ? 'border-red-500/50' : 'border-white/10'} rounded-xl px-5 py-4 text-white focus:outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all text-sm`}
+                  />
+                  {errors.email && <p className="text-[10px] text-red-500 font-bold px-1">{errors.email}</p>}
+                </div>
+
+                <div className="space-y-3">
+                  <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 px-1">
+                    <Briefcase className="w-3 h-3 text-white" /> Subject
+                  </label>
+                  <div className="relative">
+                    <select 
+                      name="subject"
+                      value={formData.subject}
+                      onChange={handleInputChange}
+                      className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 text-white focus:outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all appearance-none cursor-pointer text-sm pr-12"
+                    >
+                      <option className="bg-[#080808]">Software Development</option>
+                      <option className="bg-[#080808]">Server Management</option>
+                      <option className="bg-[#080808]">Web Development</option>
+                      <option className="bg-[#080808]">Other Inquiry</option>
+                    </select>
+                    <ChevronDown className="absolute right-5 top-1/2 -translate-y-1/2 w-4 h-4 text-white pointer-events-none transition-colors" />
+                  </div>
                 </div>
               </div>
 
-              <div className="space-y-3">
-                <label className="text-xs font-bold uppercase tracking-wider text-gray-500">Message</label>
-                <textarea rows={5} className="w-full bg-white/5 border border-white/10 rounded-xl px-5 py-4 focus:outline-none focus:border-brand-primary transition-colors text-white resize-none" placeholder="Tell us about your project..."></textarea>
+              <div className="space-y-4 mt-8">
+                <label className="text-[10px] font-black uppercase tracking-[0.2em] text-white/50 flex items-center gap-2 px-1">
+                  <MessageSquare className="w-3 h-3 text-white" /> Message
+                </label>
+                <textarea 
+                  name="message"
+                  value={formData.message}
+                  onChange={handleInputChange}
+                  rows={5} 
+                  placeholder="Tell us about your project..."
+                  className={`w-full bg-white/5 border ${errors.message ? 'border-red-500/50' : 'border-white/10'} rounded-2xl px-6 py-5 text-white focus:outline-none focus:border-brand-primary focus:bg-white/[0.08] transition-all resize-none text-sm`}
+                />
+                {errors.message && <p className="text-[10px] text-red-500 font-bold px-1">{errors.message}</p>}
               </div>
 
-              <div className="flex justify-center">
-                <button className="w-full md:w-auto px-16 py-6 bg-brand-primary hover:bg-brand-secondary text-white font-bold rounded-2xl transition-all duration-300 flex items-center justify-center space-x-3 group shadow-2xl shadow-brand-primary/30">
-                  <span>Send Message</span>
-                  <Send className="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-6 pt-10">
+                {/* Social Links */}
+                <div className="flex gap-4">
+                  {[
+                    { Icon: Linkedin, href: "#" },
+                    { Icon: XIcon, href: "https://x.com/siddhisoftworld" },
+                    { Icon: Facebook, href: "https://www.facebook.com/siddhisoftworld" },
+                    { Icon: Instagram, href: "https://www.instagram.com/siddhisoftworldcom/" }
+                  ].map((social, i) => (
+                    <Link 
+                      key={i} 
+                      href={social.href} 
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center hover:border-brand-primary transition-all text-white/50 hover:text-white"
+                    >
+                      <social.Icon className="w-5 h-5" />
+                    </Link>
+                  ))}
+                </div>
+
+                <button 
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="w-full sm:w-auto px-10 py-4 bg-brand-primary hover:bg-brand-secondary text-white font-black tracking-widest uppercase text-[10px] rounded-xl shadow-2xl shadow-brand-primary/20 transition-all duration-300 flex items-center justify-center gap-3 relative overflow-hidden group"
+                >
+                  <span className={isSubmitting ? "opacity-0" : "opacity-100"}>
+                    {isSubmitting ? "Sending..." : "Send Message"}
+                  </span>
+                  {isSubmitting && (
+                    <span className="absolute inset-0 flex items-center justify-center text-white font-black tracking-widest uppercase text-[10px]">
+                      Sending...
+                    </span>
+                  )}
+                  <motion.div
+                    animate={isSubmitting ? {
+                      x: [0, 40, 80],
+                      y: [0, -40, -80],
+                      opacity: [1, 1, 0],
+                      scale: [1, 1.2, 0.5]
+                    } : {}}
+                    transition={{ duration: 0.8, ease: "easeOut" }}
+                  >
+                    <Send className="w-4 h-4" />
+                  </motion.div>
                 </button>
               </div>
 
-              {/* Social Links - Moved to bottom of form */}
-              <div className="flex justify-center space-x-6 pt-8 border-t border-white/5">
-                {[Linkedin, Twitter, Github].map((Icon, i) => (
-                  <Link key={i} href="#" className="p-4 glass-effect rounded-2xl hover:bg-brand-primary/20 transition-all text-gray-400 hover:text-white">
-                    <Icon className="w-6 h-6" />
-                  </Link>
-                ))}
-              </div>
-            </div>
+              {/* Success Message */}
+              {showSuccess && (
+                <motion.div 
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-center pt-8 border-t border-white/5 mt-8"
+                >
+                  <p className="text-white font-bold text-sm tracking-wide">
+                    Message sent successfully! We&apos;ll get back to you soon.
+                  </p>
+                </motion.div>
+              )}
+            </form>
 
-            <div className="absolute top-0 right-0 w-64 h-64 bg-brand-primary/10 rounded-full blur-[100px] -z-10" />
-            <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-brand-secondary/5 rounded-full blur-[80px] -z-10" />
+            <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-primary/5 rounded-full blur-[120px] -z-10" />
           </motion.div>
         </div>
       </section>
@@ -126,7 +277,7 @@ export default function ContactPage() {
           >
             Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Locations</span>
           </motion.h2>
-          <p className="text-gray-400 text-xl leading-relaxed max-w-2xl mx-auto">Visit us at our offices in Vadodara and Ahmedabad</p>
+          <p className="text-gray-400 text-xl leading-relaxed max-w-xl mx-auto">Visit us at our offices in Vadodara and Ahmedabad</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
@@ -137,11 +288,10 @@ export default function ContactPage() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="glass-card p-8 rounded-3xl overflow-hidden group flex flex-col"
+              className="glass-card p-8 rounded-3xl overflow-hidden group flex flex-col hover:!border-[#EE7128] hover:!border transition-all duration-300 border border-white/5"
             >
-              {/* Office Info Box - Moved from above */}
               <div className="mb-8 p-4 min-h-[200px]">
-                <h3 className="text-2xl font-bold mb-6 text-brand-primary group-hover:text-brand-secondary transition-colors">{office.name}</h3>
+                <h3 className="text-2xl font-bold mb-6 text-brand-primary">{office.name}</h3>
                 <div className="space-y-4">
                   <div className="flex items-start space-x-4 text-sm">
                     <MapPin className="w-5 h-5 text-brand-secondary shrink-0" />
@@ -167,7 +317,7 @@ export default function ContactPage() {
                   allowFullScreen
                   loading="lazy"
                   referrerPolicy="no-referrer-when-downgrade"
-                  className="filter grayscale contrast-125 opacity-70 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
+                  className="w-full h-full"
                 />
               </div>
             </motion.div>

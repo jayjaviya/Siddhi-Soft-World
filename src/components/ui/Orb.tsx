@@ -205,6 +205,24 @@ export default function Orb({
     }
   `;
 
+  const propsRef = useRef({ 
+    hue, 
+    hoverIntensity, 
+    rotateOnHover, 
+    forceHoverState, 
+    backgroundColor 
+  });
+
+  useEffect(() => {
+    propsRef.current = { 
+      hue, 
+      hoverIntensity, 
+      rotateOnHover, 
+      forceHoverState, 
+      backgroundColor 
+    };
+  }, [hue, hoverIntensity, rotateOnHover, forceHoverState, backgroundColor]);
+
   useEffect(() => {
     const container = ctnDom.current;
     if (!container) return;
@@ -262,11 +280,9 @@ export default function Orb({
       const width = rect.width;
       const height = rect.height;
       
-      // Normalize to UV space (-1 to 1) consistently
       const uvX = (x / width) * 2.0 - 1.0;
       const uvY = (y / height) * 2.0 - 1.0;
 
-      // Detection radius 1.0 for full circle coverage
       if (Math.sqrt(uvX * uvX + uvY * uvY) < 1.0) {
         targetHover = 1;
       } else {
@@ -286,28 +302,28 @@ export default function Orb({
       rafId = requestAnimationFrame(update);
       const dt = (t - lastTime) * 0.001;
       lastTime = t;
-      program.uniforms.iTime.value = t * 0.001;
-      program.uniforms.hue.value = hue;
-      program.uniforms.hoverIntensity.value = hoverIntensity;
 
-      const effectiveHover = forceHoverState ? 1 : targetHover;
-      // Smooth easing for hover uniform
+      // Access current props from ref to avoid re-initializing the whole effect
+      const currentProps = propsRef.current;
+
+      program.uniforms.iTime.value = t * 0.001;
+      program.uniforms.hue.value = currentProps.hue;
+      program.uniforms.hoverIntensity.value = currentProps.hoverIntensity;
+      program.uniforms.backgroundColor.value = hexToVec3(currentProps.backgroundColor);
+
+      const effectiveHover = currentProps.forceHoverState ? 1 : targetHover;
       program.uniforms.hover.value += (effectiveHover - program.uniforms.hover.value) * 0.1;
 
-      // Accumulate light rotation smoothly
       currentLightRot += dt * (0.5 + program.uniforms.hover.value * 2.0);
       program.uniforms.lightRot.value = currentLightRot;
 
-      // Accumulate noise time smoothly
       currentNoiseTime += dt * 0.5 * (0.1 + program.uniforms.hover.value * 0.9);
       program.uniforms.noiseTime.value = currentNoiseTime;
 
-      // Rotate speed follows the eased hover value
-      if (rotateOnHover) {
+      if (currentProps.rotateOnHover) {
         currentRot += dt * rotationSpeed * (0.05 + program.uniforms.hover.value * 1.5);
       }
       program.uniforms.rot.value = currentRot;
-      program.uniforms.backgroundColor.value = hexToVec3(backgroundColor);
 
       renderer.render({ scene: mesh });
     };
@@ -323,7 +339,7 @@ export default function Orb({
       }
       gl.getExtension('WEBGL_lose_context')?.loseContext();
     };
-  }, [hue, hoverIntensity, rotateOnHover, forceHoverState, backgroundColor]);
+  }, []);
 
   return <div ref={ctnDom} className={`w-full h-full ${className}`} />;
 }

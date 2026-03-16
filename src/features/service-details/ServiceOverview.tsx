@@ -32,18 +32,18 @@ export default function ServiceOverview({ title, overview, summary }: ServiceOve
   
   return (
     <section className="pb-24 relative">
-      <div className="relative overflow-hidden bg-[#020a1a] border border-white/5 rounded-[4rem] min-h-[800px] flex items-center justify-center">
+      <div className="relative overflow-hidden bg-[#020a1a] border border-white/5 min-h-[800px] flex items-center justify-center">
         
         {/* Full Space Orb Background - Scaled to act as a container */}
         <div className="absolute inset-0 z-0 flex items-center justify-center">
-          <div className="w-full h-full max-w-[600px] max-h-[600px]">
+          <div className="w-full h-full max-w-[680px] max-h-[680px]">
             <Orb
               hoverIntensity={1.2}
               rotateOnHover
               hue={0}
               forceHoverState={false}
               backgroundColor="#020a1a"
-              className="scale-125 md:scale-110"
+              className="scale-[1.15]"
             />
           </div>
         </div>
@@ -56,18 +56,6 @@ export default function ServiceOverview({ title, overview, summary }: ServiceOve
         {/* Centered Content - PLACED INSIDE THE CIRCLE */}
         <div className="relative z-10 text-center px-8 max-w-sm mx-auto flex flex-col items-center justify-center aspect-square rounded-full pointer-events-none">
           
-          {/* Subtle Badge */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="inline-flex items-center px-4 py-1.5 rounded-full border border-white/5 glass-effect mb-6 backdrop-blur-sm"
-          >
-            <div className="w-1.5 h-1.5 rounded-full bg-brand-secondary mr-2 animate-pulse shadow-[0_0_8px_rgba(var(--brand-secondary-rgb),0.5)]" />
-            <span className="text-[10px] font-black tracking-[0.3em] uppercase text-white/40">
-              Visionary
-            </span>
-          </motion.div>
 
           {/* 2-3 Word Big Title - Dynamic Based on Service */}
           <motion.h2
@@ -94,9 +82,6 @@ export default function ServiceOverview({ title, overview, summary }: ServiceOve
           </motion.div>
         </div>
 
-        {/* Minimal Corner Accents */}
-        <div className="absolute top-12 left-12 w-12 h-12 border-t-2 border-l-2 border-white/10 pointer-events-none" />
-        <div className="absolute bottom-12 right-12 w-12 h-12 border-b-2 border-r-2 border-white/10 pointer-events-none" />
         
       </div>
     </section>

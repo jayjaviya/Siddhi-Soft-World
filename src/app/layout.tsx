@@ -28,10 +28,9 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className={`${inter.className} ${dancingScript.variable} ${spaceGrotesk.variable} antialiased bg-background text-foreground`} suppressHydrationWarning>
-        <div className="aurora-bg" />
-        <div className="flex flex-col min-h-screen">
+        <div className="relative flex flex-col min-h-screen">
           <Header />
-          <main className="flex-grow pt-28 md:pt-[136px]">
+          <main className="relative flex-grow pt-28 md:pt-[136px]">
             {children}
           </main>
           <Footer />

@@ -95,7 +95,7 @@ export default function ServiceBenefits({ benefits }: ServiceBenefitsProps) {
           >
             The <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Competitive Edge</span>
           </motion.h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-md mx-auto">
             Why leading global enterprises choose Siddhi Soft World for their mission-critical transformations.
           </p>
         </div>

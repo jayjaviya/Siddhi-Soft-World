@@ -29,12 +29,12 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
   const bgScale = useTransform(scrollYProgress, [0, 1], [1.1, 1.3]);
 
   return (
-    <section ref={targetRef} className="relative -top-[30px] min-h-[100vh] pt-10 overflow-hidden">
+    <section ref={targetRef} className="relative -top-[30px] min-h-[85svh] md:min-h-[100vh] pt-10 overflow-hidden">
       {/* Scroll-tracked Media Container */}
-      <div className="sticky top-0 h-[60vh] md:h-[70vh] w-full flex items-center justify-center overflow-hidden">
+      <div className="sticky top-0 h-[58svh] sm:h-[60vh] md:h-[70vh] w-full flex items-center justify-center overflow-hidden">
         <motion.div
-          style={{ scale, borderTopLeftRadius: borderRadius, borderTopRightRadius: borderRadius }}
-          className="relative w-full h-full overflow-hidden shadow-2xl shadow-brand-primary/20 bg-gradient-to-br from-brand-primary/10 via-bg-deep to-brand-secondary/10"
+          style={{ scale }}
+          className="relative w-full h-full overflow-hidden shadow-2xl shadow-brand-primary/20 bg-gradient-to-br from-brand-secondary/20 via-[#020a1a] to-brand-primary/5"
         >
           {/* Background Elements */}
           <div className="absolute inset-0 z-0 overflow-hidden select-none pointer-events-none">
@@ -52,12 +52,12 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
               />
             </motion.div>
 
-            <div className="absolute inset-0 bg-gradient-to-b from-bg-deep via-transparent to-bg-deep opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-b from-[#020a1a] via-transparent to-[#020a1a] opacity-90" />
             <div className="absolute inset-0 bg-black/40 z-10 backdrop-blur-[2px]" />
             <div className="absolute inset-0 bg-gradient-to-b from-bg-deep/60 via-transparent to-bg-deep/90 z-10" />
             
             {/* Ghost Title Background */}
-            <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[15rem] md:text-[25rem] font-black text-white/[0.02] select-none pointer-events-none uppercase whitespace-nowrap z-0">
+            <div className="hidden sm:block absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-[7rem] md:text-[15rem] lg:text-[25rem] font-black text-white/[0.02] select-none pointer-events-none uppercase whitespace-nowrap z-0">
               {breadcrumb || title.split(" ")[0]}
             </div>
           </div>
@@ -67,7 +67,7 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
             className="relative z-10 h-full flex flex-col items-center justify-center text-center px-6"
           >
             <motion.h1
-              className="text-4xl md:text-7xl font-black mb-8 leading-[0.9] tracking-tighter"
+              className="text-3xl sm:text-4xl md:text-7xl font-black mb-6 md:mb-8 leading-[0.9] tracking-tighter"
               variants={{
                 animate: {
                   transition: {
@@ -105,7 +105,7 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
                   if (words.length === 2) {
                     return (
                       <>
-                        <div className="flex mr-6 text-white">
+                        <div className="flex mr-3 sm:mr-6 text-white">
                           {words[0].split("").map((char, index) => (
                             <motion.span
                               key={`first-${index}`}
@@ -164,7 +164,7 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
                       </div>
                       {/* Second-to-last word - Orange gradient + Last word - Teal gradient */}
                       <div className="flex justify-center">
-                        <div className="flex mr-6">
+                        <div className="flex mr-3 sm:mr-6">
                           {secondLastWord.split("").map((char, index) => (
                             <motion.span
                               key={`mid-${index}`}
@@ -206,7 +206,7 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.4 }}
-                className="text-lg md:text-2xl text-gray-400 max-w-2xl mx-auto leading-relaxed mb-12"
+                className="text-base sm:text-lg md:text-2xl text-gray-400 max-w-xl mx-auto leading-relaxed mb-10 md:mb-12"
               >
                 {subtitle}
               </motion.p>
@@ -217,10 +217,10 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.6 }}
-              className="relative inline-flex items-center"
+              className="relative inline-flex items-center max-w-full"
             >
               <div className="absolute inset-0 bg-brand-primary/20 blur-xl opacity-30 rounded-full" />
-              <div className="relative flex items-center space-x-3 px-6 py-2.5 glass-effect rounded-full border border-white/10 group overflow-hidden">
+              <div className="relative flex max-w-full flex-wrap items-center justify-center gap-x-3 gap-y-1 px-4 sm:px-6 py-2.5 glass-effect rounded-[1.5rem] sm:rounded-full border border-white/10 group overflow-hidden text-center">
                 <div className="absolute inset-0 bg-gradient-to-r from-brand-primary/5 via-transparent to-brand-secondary/5 opacity-0 group-hover:opacity-100 transition-opacity duration-700" />
                 
                 <Link 
@@ -254,7 +254,6 @@ export default function PageHero({ title, subtitle, breadcrumb }: PageHeroProps)
       </div>
 
       {/* Advanced Decorative Elements (Fixed to Viewport or sticking) */}
-      <div className="absolute top-0 right-0 w-1/2 h-full bg-gradient-to-l from-brand-primary/10 to-transparent -z-10 pointer-events-none" />
       
       <div className="absolute -bottom-24 -left-24 w-96 h-96 bg-brand-secondary/10 rounded-full blur-[120px] -z-10 pointer-events-none" />
       <div className="absolute top-1/4 right-0 w-80 h-80 bg-brand-primary/5 rounded-full blur-[100px] -z-10 pointer-events-none" />

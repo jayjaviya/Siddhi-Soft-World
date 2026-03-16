@@ -94,13 +94,13 @@ export default function Testimonials() {
 
       <div className="container mx-auto px-6 relative z-10">
         <div className="text-center mb-20">
-          <h2 className="text-4xl md:text-7xl font-black mb-6 tracking-tighter">
+          <h2 className="text-4xl md:text-6xl font-black mb-6 tracking-tighter leading-tight">
             What Our Clients{" "}
             <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">
               Say
             </span>
           </h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto font-medium leading-relaxed">
+          <p className="text-xl text-gray-400 max-w-xl mx-auto font-medium leading-relaxed">
             Real stories from real partners. Discover why businesses trust Siddhi Soft World to power their digital transformation.
           </p>
         </div>

@@ -1,6 +1,6 @@
 "use client";
 
-import { motion, useInView, useMotionValue, useTransform, animate } from "framer-motion";
+import { motion, useInView, useMotionValue, useTransform, animate, useReducedMotion } from "framer-motion";
 import { useRef, useEffect } from "react";
 import { Briefcase, Users, Clock, Award } from "lucide-react";
 
@@ -15,7 +15,7 @@ const STATS = [
   },
   {
     icon: Briefcase,
-    value: 500,
+    value: 160,
     suffix: "+",
     label: "Projects Delivered",
     color: "from-cyan-400 to-blue-400",
@@ -44,15 +44,16 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
   const motionValue = useMotionValue(0);
   const rounded = useTransform(motionValue, (v) => Math.round(v));
   const isInView = useInView(ref, { once: true, margin: "-100px" });
+  const prefersReducedMotion = useReducedMotion();
 
   useEffect(() => {
     if (isInView) {
       animate(motionValue, value, {
-        duration: 2,
+        duration: prefersReducedMotion ? 0.01 : 1.4,
         ease: [0.22, 1, 0.36, 1],
       });
     }
-  }, [isInView, motionValue, value]);
+  }, [isInView, motionValue, value, prefersReducedMotion]);
 
   useEffect(() => {
     const unsubscribe = rounded.on("change", (v) => {
@@ -67,6 +68,8 @@ function AnimatedNumber({ value, suffix }: { value: number; suffix: string }) {
 }
 
 export default function StatsCounter() {
+  const prefersReducedMotion = useReducedMotion();
+
   return (
     <section className="py-24 relative overflow-hidden bg-bg-deep">
       {/* Subtle background elements */}
@@ -84,7 +87,7 @@ export default function StatsCounter() {
           transition={{ duration: 0.8 }}
           className="text-center mb-20"
         >
-          <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-4 flex flex-col md:flex-row justify-center items-center md:space-x-4">
+          <h2 className="text-4xl md:text-6xl font-black tracking-tighter mb-4">
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -92,7 +95,7 @@ export default function StatsCounter() {
               transition={{ duration: 0.8, delay: 0.1 }}
             >
               Numbers That
-            </motion.span>
+            </motion.span>{" "}
             <motion.span
               initial={{ opacity: 0, scale: 0.8 }}
               whileInView={{ opacity: 1, scale: 1 }}
@@ -103,7 +106,7 @@ export default function StatsCounter() {
               Speak
             </motion.span>
           </h2>
-          <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 font-medium max-w-lg mx-auto">
             A decade of delivering enterprise-grade results across the globe.
           </p>
         </motion.div>
@@ -123,7 +126,6 @@ export default function StatsCounter() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.6, delay: idx * 0.1 }}
-              whileHover={{ y: -8, scale: 1.02 }}
               className="group relative"
             >
               <div className="relative p-8 md:p-10 rounded-3xl border border-white/[0.06] bg-white/[0.02] backdrop-blur-sm overflow-hidden transition-all duration-500 group-hover:border-white/15 group-hover:bg-white/[0.04]">
@@ -142,7 +144,7 @@ export default function StatsCounter() {
                 <div className="relative z-10 text-center">
                   {/* Icon */}
                   <motion.div
-                    whileHover={{ rotate: 15, scale: 1.1 }}
+                    whileHover={prefersReducedMotion ? undefined : { rotate: 8, scale: 1.05 }}
                     className={`w-12 h-12 mx-auto rounded-xl bg-white/5 group-hover:bg-white/10 flex items-center justify-center mb-6 ${stat.iconColor} transition-all duration-500`}
                   >
                     <stat.icon className="w-6 h-6" />

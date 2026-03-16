@@ -36,7 +36,7 @@ export default function ServiceSidebar() {
                 href={href}
                 className={`group flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold transition-all duration-300 ${
                   isActive
-                    ? "bg-transparent text-white border border-brand-primary"
+                    ? "bg-white/10 text-white border border-transparent"
                     : "text-gray-400 hover:text-white hover:bg-white/5 border border-transparent"
                 }`}
               >
@@ -44,9 +44,6 @@ export default function ServiceSidebar() {
                   isActive ? "text-white" : "text-gray-600 group-hover:text-brand-secondary"
                 }`} />
                 <span className="truncate">{service.title}</span>
-                {isActive && (
-                  <div className="ml-auto w-1.5 h-1.5 rounded-full bg-white shrink-0" />
-                )}
               </Link>
             );
           })}

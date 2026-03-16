@@ -1,7 +1,7 @@
 "use client";
 
-import { motion, useScroll, useTransform } from "framer-motion";
-import { useRef } from "react";
+import { motion, useScroll, useTransform, useReducedMotion, useSpring } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { LucideIcon } from "lucide-react";
 import Image from "next/image";
 
@@ -11,6 +11,7 @@ interface RevealItem {
   image: string;
   icon: LucideIcon;
   color: string;
+  features?: string[];
 }
 
 interface StickyRevealProps {
@@ -22,9 +23,10 @@ interface RevealMediaProps {
   idx: number;
   n: number;
   scrollYProgress: any;
+  enableScrollFx: boolean;
 }
 
-function RevealMedia({ item, idx, n, scrollYProgress }: RevealMediaProps) {
+function RevealMedia({ item, idx, n, scrollYProgress, enableScrollFx }: RevealMediaProps) {
   const input = [];
   const output = [];
   
@@ -45,33 +47,122 @@ function RevealMedia({ item, idx, n, scrollYProgress }: RevealMediaProps) {
   }
   
   const opacity = useTransform(scrollYProgress, input, output, { clamp: true });
+  const staticOpacity = idx === 0 ? 1 : 0;
   
   return (
     <motion.div
-      style={{ opacity }}
+      style={{ opacity: enableScrollFx ? opacity : staticOpacity }}
       className="absolute inset-0 flex items-center justify-center overflow-hidden rounded-[3rem]"
     >
       <Image 
         src={item.image} 
         alt={item.title} 
         fill 
-        className="object-cover opacity-90 transition-transform duration-1000 hover:scale-110" 
+        className="object-cover opacity-90" 
       />
       <div className="absolute inset-0 bg-gradient-to-t from-bg-deep/80 to-transparent opacity-40" />
-      <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-20 mix-blend-overlay`} />
+      <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-15 mix-blend-overlay`} />
+    </motion.div>
+  );
+}
+
+interface RevealTextProps {
+  item: RevealItem;
+  idx: number;
+  n: number;
+  scrollYProgress: any;
+  enableScrollFx: boolean;
+}
+
+function RevealText({ item, idx, n, scrollYProgress, enableScrollFx }: RevealTextProps) {
+  const input = [];
+  const outputOpacity = [];
+  const outputRotateX = [];
+  
+  if (idx === 0) {
+    input.push(0, (idx + 0.5) / n, (idx + 0.8) / n);
+    outputOpacity.push(1, 1, 0);
+    outputRotateX.push(0, 0, -90);
+  } else if (idx === n - 1) {
+    input.push((idx - 0.2) / n, (idx + 0.1) / n, 1);
+    outputOpacity.push(0, 1, 1);
+    outputRotateX.push(90, 0, 0);
+  } else {
+    input.push(
+      (idx - 0.2) / n,
+      (idx + 0.1) / n,
+      (idx + 0.5) / n,
+      (idx + 0.8) / n
+    );
+    outputOpacity.push(0, 1, 1, 0);
+    outputRotateX.push(90, 0, 0, -90);
+  }
+  
+  const opacity = useTransform(scrollYProgress, input, outputOpacity, { clamp: true });
+  const rotateX = useTransform(scrollYProgress, input, outputRotateX, { clamp: true });
+  
+  const staticOpacity = idx === 0 ? 1 : 0;
+  
+  return (
+    <motion.div
+      style={{ 
+        opacity: enableScrollFx ? opacity : staticOpacity,
+        rotateX: enableScrollFx ? rotateX : 0,
+        transformOrigin: "center center -200px",
+        transformStyle: "preserve-3d",
+      }}
+      className="absolute inset-0 flex flex-col justify-center max-w-lg"
+    >
+      <h3 className="text-3xl md:text-5xl font-black mb-6 leading-tight text-white tracking-tight">
+        {item.title}
+      </h3>
+      <p className="text-lg text-gray-400 leading-relaxed font-medium mb-6">
+        {item.description}
+      </p>
+
+      {item.features && (
+        <ul className="space-y-3 mb-8">
+          {item.features.map((feat, fIdx) => (
+            <li key={fIdx} className="flex items-center gap-3 text-sm md:text-[15px] text-gray-200 font-medium tracking-wide">
+              <div className="w-2 h-2 rounded-full bg-brand-primary shadow-[0_0_8px_rgba(238,113,40,0.6)] flex-shrink-0" />
+              <span>{feat}</span>
+            </li>
+          ))}
+        </ul>
+      )}
+
+      <div className="h-1.5 w-20 bg-brand-primary rounded-full shadow-[0_0_20px_rgba(238,113,40,0.4)]" />
     </motion.div>
   );
 }
 
 export default function StickyReveal({ items }: StickyRevealProps) {
+  const prefersReducedMotion = useReducedMotion();
+  const [isDesktop, setIsDesktop] = useState(false);
   const containerRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(min-width: 1024px)");
+    const update = () => setIsDesktop(mq.matches);
+    update();
+    mq.addEventListener("change", update);
+    return () => mq.removeEventListener("change", update);
+  }, []);
+
+  const enableScrollFx = isDesktop && !prefersReducedMotion;
+
   const { scrollYProgress } = useScroll({
     target: containerRef,
     offset: ["start start", "end end"],
   });
 
+  const smoothScrollProgress = useSpring(scrollYProgress, {
+    stiffness: 45,
+    damping: 25,
+  });
+
   return (
-    <div ref={containerRef} className="relative pt-32 pb-32">
+    <div ref={containerRef} className="relative pt-12 pb-12">
       <div className="container mx-auto px-6">
         <motion.div 
           initial={{ opacity: 0, y: 30 }}
@@ -99,55 +190,75 @@ export default function StickyReveal({ items }: StickyRevealProps) {
               Infrastructure
             </motion.span>
           </h2>
-          <p className="text-xl text-gray-400 font-medium max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 font-medium max-w-xl mx-auto">
             Robust, scalable, and secure foundations for your mission-critical applications.
           </p>
         </motion.div>
 
-        <div className="flex flex-col lg:flex-row gap-16 lg:gap-24 items-start">
-          {/* Left Side: Sticky Media */}
-          <div className="lg:w-1/2 h-[50vh] lg:h-[70vh] sticky top-48 lg:top-[25vh] flex flex-col justify-center items-center order-2 lg:order-1">
-            <div className="relative w-full max-w-[500px] aspect-square rounded-[3rem] bg-white/5 border border-white/10 overflow-hidden group shadow-2xl">
+        <div className="relative flex flex-col lg:flex-row items-start min-h-[100px]">
+          
+          {/* 1. Mobile & Medium Grid: traditional flow */}
+          <div className="lg:hidden w-full flex flex-col gap-12">
+            {items.map((item, idx) => (
+              <div key={idx} className="flex flex-col gap-6 p-6 bg-white/[0.02] border border-white/5 rounded-3xl">
+                <div className="aspect-square relative rounded-2xl overflow-hidden">
+                  <Image src={item.image} alt={item.title} fill className="object-cover" />
+                  <div className={`absolute inset-0 bg-gradient-to-br ${item.color} opacity-20`} />
+                </div>
+                <div className="max-w-lg">
+                  <h3 className="text-2xl font-black mb-4 text-white">{item.title}</h3>
+                  <p className="text-gray-400 leading-relaxed font-medium mb-4">{item.description}</p>
+
+                  {item.features && (
+                    <ul className="space-y-2.5">
+                      {item.features.map((feat, fIdx) => (
+                        <li key={fIdx} className="flex items-center gap-2.5 text-sm text-gray-300 font-medium">
+                          <div className="w-1.5 h-1.5 rounded-full bg-brand-primary flex-shrink-0" />
+                          <span>{feat}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          {/* 2. Desktop Sticky Scroll Height Provider (Invisible Spacer) */}
+          <div className="hidden lg:block lg:w-1/2 h-[350vh] opacity-0 pointer-events-none invisible" />
+
+          {/* 3. Left Side: Sticky Media Panel */}
+          <div className="hidden lg:flex lg:absolute lg:top-0 lg:bottom-0 lg:left-0 lg:w-1/2 h-full flex-col items-end pr-12">
+            <div className="sticky top-[12vh] w-full max-w-[500px] aspect-square rounded-[3rem] bg-white/5 border border-white/10 overflow-hidden group shadow-2xl relative">
               {items.map((item, idx) => (
                 <RevealMedia 
                   key={idx} 
                   item={item} 
                   idx={idx} 
                   n={items.length} 
-                  scrollYProgress={scrollYProgress} 
+                  scrollYProgress={smoothScrollProgress} 
+                  enableScrollFx={enableScrollFx}
                 />
               ))}
             </div>
           </div>
 
-          {/* Right Side: Scrollable Content */}
-          <div className="lg:w-1/2 space-y-[20vh] py-[10vh] order-1 lg:order-2">
-            {items.map((item, idx) => (
-              <motion.div
-                key={idx}
-                initial={{ opacity: 0, x: 50 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ margin: "-200px" }}
-                transition={{ duration: 0.8 }}
-                className="max-w-lg"
-              >
-                <item.icon className="w-12 h-12 text-brand-primary mb-8" />
-                <motion.h2 
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ margin: "-100px" }}
-                  transition={{ duration: 0.8, delay: 0.1 }}
-                  className="text-4xl md:text-6xl font-black mb-8 leading-tight"
-                >
-                  {item.title}
-                </motion.h2>
-                <p className="text-xl text-gray-400 leading-relaxed font-medium">
-                  {item.description}
-                </p>
-                <div className="mt-12 h-1 w-24 bg-brand-primary rounded-full group" />
-              </motion.div>
-            ))}
+          {/* 4. Right Side: Sticky Text Slider Panel */}
+          <div className="hidden lg:flex lg:absolute lg:top-0 lg:bottom-0 lg:right-0 lg:w-1/2 h-full flex-col items-start pl-12">
+            <div className="sticky top-[12vh] w-full max-w-[500px] h-96 relative">
+              {items.map((item, idx) => (
+                <RevealText 
+                  key={idx} 
+                  item={item} 
+                  idx={idx} 
+                  n={items.length} 
+                  scrollYProgress={smoothScrollProgress} 
+                  enableScrollFx={enableScrollFx}
+                />
+              ))}
+            </div>
           </div>
+          
         </div>
       </div>
     </div>

@@ -16,7 +16,8 @@ export default function Logo({ className = "" }: { className?: string }) {
         width={180}
         height={50}
         priority
-        className="h-auto w-auto max-h-[50px] md:max-h-[56px] object-contain"
+        className="w-full h-auto max-w-[100px] sm:max-w-[130px] md:max-w-[160px] lg:max-w-[180px] object-contain transition-all"
+        style={{ width: "auto" }}
       />
     </motion.div>
   );

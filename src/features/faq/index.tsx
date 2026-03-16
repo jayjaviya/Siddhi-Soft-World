@@ -86,10 +86,10 @@ export default function FAQ() {
                 viewport={{ once: true }}
                 transition={{ duration: 0.8 }}
               >
-                <h2 className="text-4xl md:text-7xl font-black mb-8 tracking-tighter leading-[0.9]">
+                <h2 className="text-4xl md:text-6xl font-black mb-12 tracking-tighter leading-[1.1]">
                   Frequently Asked <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Questions</span>
                 </h2>
-                <p className="text-lg md:text-xl text-white/60 font-medium leading-relaxed mb-12">
+                <p className="text-lg md:text-xl text-white/60 font-medium leading-relaxed mb-12 max-w-xl">
                   Everything you need to know about our services, process, and tech expertise. 
                   We're here to help you navigate your digital transformation.
                 </p>

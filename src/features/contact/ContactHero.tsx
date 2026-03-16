@@ -33,15 +33,15 @@ export default function ContactHero() {
           {/* Background Image & Overlays */}
           <div className="absolute inset-0 z-0">
             <Image
-              src="/images/contact/image.png"
+              src="/images/contact/contact-hero-bg.jpg"
               alt="Contact Background"
               fill
               className="object-cover"
               priority
             />
-            <div className="absolute inset-0 bg-bg-deep/75 backdrop-blur-[2px] z-10" />
+            <div className="absolute inset-0 bg-bg-deep/50 backdrop-blur-[1px] z-10" />
             <div className="absolute inset-0 bg-gradient-to-b from-bg-deep via-transparent to-bg-deep z-10" />
-            <div className="absolute inset-0 bg-gradient-to-r from-bg-deep/80 via-transparent to-bg-deep/80 z-10" />
+            <div className="absolute inset-0 bg-gradient-to-r from-bg-deep/60 via-transparent to-bg-deep/60 z-10" />
           </div>
             
             {/* Ambient Blurs */}

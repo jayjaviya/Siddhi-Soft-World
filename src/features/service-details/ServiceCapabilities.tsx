@@ -30,6 +30,8 @@ export default function ServiceCapabilities({ capabilities }: ServiceCapabilitie
   }
 
   const visibleIndexes = [activeIndex - 1, activeIndex, activeIndex + 1];
+  const activeCapability = capabilities[activeIndex];
+  const currentNumber = String(activeIndex + 1).padStart(2, "0");
 
   return (
     <section className="py-24 bg-bg-deep/50 relative">
@@ -43,12 +45,61 @@ export default function ServiceCapabilities({ capabilities }: ServiceCapabilitie
           >
             Core <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Capabilities</span>
           </motion.h2>
-          <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+          <p className="text-xl text-gray-400 max-w-md mx-auto">
             Our specialized expertise delivered with surgical precision and enterprise-grade reliability.
           </p>
         </div>
 
-        <div className="overflow-hidden pb-2">
+        <div className="md:hidden">
+          <motion.div
+            key={activeIndex}
+            initial={{ opacity: 0, y: 18 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.35 }}
+            className={`relative overflow-hidden rounded-[2rem] border border-white/10 bg-white/[0.03] bg-gradient-to-b ${ACTIVE_BACKGROUNDS[activeIndex % ACTIVE_BACKGROUNDS.length]}`}
+          >
+            <div className="relative p-6 min-h-[320px] flex flex-col">
+              <div className="text-5xl font-black tracking-tight text-white/65">
+                {currentNumber}
+              </div>
+
+              <div className="flex-1 flex items-center">
+                <div className="w-full">
+                  <h3
+                    style={{ fontFamily: "var(--font-display), system-ui, sans-serif" }}
+                    className="font-black leading-[0.95] [text-wrap:balance] text-[2.2rem] text-black mt-2 mb-3 tracking-[-0.03em]"
+                  >
+                    {activeCapability.title}
+                  </h3>
+                  <p className="text-black/65 leading-relaxed text-sm">
+                    {activeCapability.desc || "Enterprise-grade solution tailored for high-performance requirements and scalable infrastructure."}
+                  </p>
+                </div>
+              </div>
+
+              <div className="mt-6 flex items-center justify-between gap-3">
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex((current) => (current === 0 ? capabilities.length - 1 : current - 1))}
+                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-black/70"
+                >
+                  <ChevronLeft className="w-4 h-4" />
+                  Prev
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setActiveIndex((current) => (current === capabilities.length - 1 ? 0 : current + 1))}
+                  className="inline-flex items-center gap-2 rounded-full border border-black/10 bg-black/5 px-4 py-2 text-[11px] font-black uppercase tracking-[0.2em] text-black/70"
+                >
+                  Next
+                  <ChevronRight className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </motion.div>
+        </div>
+
+        <div className="hidden md:block overflow-hidden pb-2">
           <div className="flex items-stretch justify-center gap-4 md:gap-5">
             {visibleIndexes.map((idx, position) => {
               if (idx < 0 || idx >= capabilities.length) {

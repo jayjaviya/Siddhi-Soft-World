@@ -58,7 +58,7 @@ const SERVICES = [
   {
     title: "Storage Management",
     desc: "Optimizing AWS EC2 EBS and multi-cloud storage environments to reduce wastage and improve performance metrics.",
-    image: "/images/home/services/storage-mgmt-v2.jpg",
+    image: "/images/home/services/storage-mgmt-v3.jpg",
     tags: ["EBS Optimization", "Capacity Planning", "Multi-Cloud Storage", "Cost Management"],
     slug: "storage-management",
   },
@@ -72,7 +72,7 @@ const SERVICES = [
   {
     title: "Disaster Recovery & Backup",
     desc: "Acronis True Image Workstation-Desktop OS Images. Acronis Enterprise Server-Server recovery, bare metal Recovery.",
-    image: "/images/home/services/disaster-recovery-v2.webp",
+    image: "/images/home/services/disaster-recovery-v3.jpg",
     tags: ["Acronis Backup", "Bare Metal Recovery", "Business Continuity", "Cloud Backup"],
     slug: "disaster-recovery-backup",
   },
@@ -102,13 +102,13 @@ function NavItem({
       <motion.span
         initial={false}
         animate={{ 
-          color: isInView ? "#FFFFFF" : "rgba(255, 255, 255, 0.6)",
-          rotateX: isInView ? [90, 0] : 0,
-          opacity: isInView ? 1 : 0.6,
-          filter: isInView ? "blur(0px)" : "blur(1px)",
+          color: isInView ? "#FFFFFF" : "rgba(255, 255, 255, 0.4)",
+          rotateX: isInView ? 0 : 15,
+          opacity: isInView ? 1 : 0.4,
+          filter: isInView ? "blur(0px)" : "blur(2px)",
         }}
         transition={{ 
-          duration: 1.2, 
+          duration: 0.8, 
           ease: [0.22, 1, 0.36, 1],
         }}
         className="block text-[clamp(1.25rem,2vw,2rem)] font-bold tracking-[-0.02em] origin-center"
@@ -138,7 +138,7 @@ function ParallaxImage({ src, alt, priority }: { src: string; alt: string; prior
       ref={containerRef} 
       className="relative h-[50vh] md:h-[65vh] lg:h-[75vh] w-full overflow-hidden bg-white/5"
     >
-      <motion.div style={{ y, scale: 1.3 }} className="relative w-full h-full">
+      <motion.div style={{ y, scale: 1.1 }} className="relative w-full h-full">
         <Image
           src={src}
           alt={alt}
@@ -172,37 +172,50 @@ export default function ServicesSection() {
   const sectionRef = useRef<HTMLElement>(null);
   
   // Dynamically adjust scroll speed when exploring this section
-  const lenisInstance = useLenis((lenis) => {
-    if (!sectionRef.current || !lenis) return;
-    
-    const rect = sectionRef.current.getBoundingClientRect();
-    const windowHeight = window.innerHeight;
-    const viewportCenter = windowHeight / 2;
-    
-    // Check if the center of the viewport is within the section boundaries
-    const isCenterInSection = rect.top <= viewportCenter && rect.bottom >= viewportCenter;
-    
-    // Slower scroll (0.4x) when inside the section, normal (1x) when outside
-    const targetMultiplier = isCenterInSection ? 0.4 : 1;
-    const currentMultiplier = (lenis as any).options.wheelMultiplier ?? 1;
-    
-    // Smoothly lerp towards target to avoid jarring speed changes
-    const newMultiplier = currentMultiplier + (targetMultiplier - currentMultiplier) * 0.1;
-    
-    // Apply new multiplier if different enough
-    if (Math.abs(newMultiplier - currentMultiplier) > 0.001) {
-      (lenis as any).options.wheelMultiplier = newMultiplier;
-    }
-  });
-
-  // Ensure scroll speed is reset if component unmounts while in slow mode
+  // Optimize scroll speed adjustment using IntersectionObserver to avoid layout thrashing
   useEffect(() => {
+    if (!sectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          // When entering/leaving the section, we can adjust the lenis multiplier once
+          // or set a flag that the useLenis hook can use more efficiently.
+          // However, directly modifying options.wheelMultiplier here is safer than per-frame.
+          const isIntersecting = entry.isIntersecting;
+          const lenis = (window as any).lenis; // Lenis is often attached to window or accessible via context
+          
+          if (lenis && (lenis as any).options) {
+            (lenis as any).options.wheelMultiplier = isIntersecting ? 0.4 : 1;
+          }
+        });
+      },
+      {
+        threshold: [0, 0.5, 1], // Multiple thresholds for smoother transitions if needed
+        rootMargin: "-20% 0px -20% 0px", // Approximate "center" observation
+      }
+    );
+
+    observer.observe(sectionRef.current);
+    
     return () => {
-      if (lenisInstance) {
-        (lenisInstance as any).options.wheelMultiplier = 1;
+      observer.disconnect();
+      // Ensure reset on unmount
+      const lenis = (window as any).lenis;
+      if (lenis && (lenis as any).options) {
+        (lenis as any).options.wheelMultiplier = 1;
       }
     };
-  }, [lenisInstance]);
+  }, []);
+
+  // Simplified useLenis just to keep a reference or small updates if needed, 
+  // but WITHOUT calling getBoundingClientRect()
+  useLenis((lenis) => {
+    // We can also attach lenis to window here if it's not already, for the observer to find it
+    if (lenis && !(window as any).lenis) {
+      (window as any).lenis = lenis;
+    }
+  });
 
   return (
     <section ref={sectionRef} className="relative" style={{ background: "#020a1a" }}>
@@ -215,16 +228,16 @@ export default function ServicesSection() {
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
-              className="text-6xl md:text-8xl lg:text-[120px] font-black tracking-[-0.04em] text-white leading-[0.9]"
+              className="text-5xl md:text-7xl lg:text-[100px] font-black tracking-tighter text-white leading-[0.9]"
             >
-              Services
+              Our <span className="bg-clip-text text-transparent bg-gradient-to-r from-brand-primary via-white to-brand-secondary">Services</span>
             </motion.h2>
             <motion.p
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ duration: 0.8, delay: 0.2 }}
-              className="text-white/40 max-w-2xl text-base md:text-lg leading-relaxed mx-auto mt-10"
+              className="text-white/40 max-w-xl text-base md:text-lg leading-relaxed mx-auto mt-10"
             >
               Full-spectrum IT capabilities under one roof. Whether you need
               application development or ongoing infrastructure support, we
@@ -303,7 +316,7 @@ export default function ServicesSection() {
                     </h3>
                   </div>
 
-                  <p className="text-white/45 text-base md:text-lg leading-relaxed max-w-2xl mb-10">
+                  <p className="text-white/45 text-base md:text-lg leading-relaxed max-w-xl mb-10">
                     {s.desc}
                   </p>
 
@@ -322,9 +335,16 @@ export default function ServicesSection() {
                     </div>
                     <Link
                       href={`/services/${s.slug}`}
-                      className="shrink-0 w-12 h-12 rounded-full border border-brand-primary/20 flex items-center justify-center text-brand-primary hover:text-white hover:bg-brand-primary transition-all duration-300 group/arrow shadow-xl"
+                      className="shrink-0 w-12 h-12 rounded-full flex items-center justify-center bg-[#e0e0e0] shadow-[5px_5px_10px_rgba(0,0,0,0.6),-2px_-2px_6px_rgba(255,255,255,0.15)] hover:scale-105 transition-all duration-300 group/arrow active:scale-95 active:shadow-[inset_4px_4px_8px_rgba(0,0,0,0.2),inset_-4px_-4px_8px_rgba(255,255,255,0.6)] overflow-hidden"
                     >
-                      <ArrowRight className="w-5 h-5 group-hover/arrow:translate-x-0.5 transition-transform duration-300" />
+                      <div className="relative w-6 h-6 overflow-hidden">
+                        <ArrowRight 
+                          className="absolute inset-0 w-6 h-6 text-[#2d2d2d] stroke-[3px] transition-all duration-500 ease-[0.16,1,0.3,1] group-hover/arrow:translate-x-10 group-hover/arrow:opacity-0" 
+                        />
+                        <ArrowRight 
+                          className="absolute inset-0 w-6 h-6 text-[#ee7128] stroke-[3px] -translate-x-10 opacity-0 transition-all duration-500 ease-[0.16,1,0.3,1] group-hover/arrow:translate-x-0 group-hover/arrow:opacity-100" 
+                        />
+                      </div>
                     </Link>
                   </div>
                 </div>
